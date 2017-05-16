@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.leidong.superkeymanager.activity.ItemEditActivity">
+    <item
+        android:id="@+id/menu_item_edit_activity_finish"
+        android:title="完成修改"
+        android:orderInCategory="1"/>
+    <item
+        android:id="@+id/menu_item_edit_activity_delete"
+        android:title="删除该条目"
+        android:orderInCategory="2"/>
+    <item
+        android:id="@+id/menu_item_edit_activity_view"
+        android:title="返回查看界面"
+        android:orderInCategory="3"/>
+</menu>

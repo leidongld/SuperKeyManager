@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.LoginActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--登录界面-->
+    <TextView
+        android:text="登录界面"
+        android:textSize="40dp"
+        android:textColor="@color/textColorBlack"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:text="主密码："
+        android:textSize="16sp"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/textColorBlack"
+        android:gravity="center_vertical"/>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:background="@drawable/lock"/>
+        <!--主密码输入框-->
+        <EditText
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="输入主密码进行登录"
+            android:password="true"
+            android:textSize="20dp"
+            android:ems="10"
+            android:id="@+id/et_login_activity_masterpassword" />
+    </TableRow>
+    <!--显示或隐藏主密码-->
+    <Switch
+        android:text="密码不可见"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:id="@+id/switch_login_activity_first" />
+    <!--登录按钮-->
+    <Button
+        android:text="登录"
+        android:textSize="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/bt_login_activity_login"
+        android:background="@drawable/button_shape"/>
+    <!--指纹-->
+    <Button
+        android:text="指纹"
+        android:textSize="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/bt_login_activity_fingerlogin"
+        android:background="@drawable/button_shape"/>
+    <!--离开按钮-->
+    <Button
+        android:text="离开"
+        android:textSize="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/bt_login_activity_exit"
+        android:background="@drawable/button_shape"/>
+    <!--添加内部键盘布局-->
+    <include layout="@layout/secure_keyboard"/>
+</LinearLayout>
+</ScrollView>

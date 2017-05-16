@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/pink_background">
+        <!--条目界面-->
+        <TextView
+            android:text="条目界面"
+            android:textSize="40dp"
+            android:textColor="@color/textColorBlack"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!--分隔线-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/divide_line"/>
+
+    <ScrollView
+        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:scrollbarStyle="insideOverlay"
+        android:fillViewport="true">
+        <!--条目列表-->
+        <ListView
+            android:id="@+id/lv_items_activity_items"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="16.25" />
+    </ScrollView>
+    </LinearLayout>
+

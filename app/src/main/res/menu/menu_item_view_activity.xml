@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.leidong.superkeymanager.activity.ItemViewActivity">
+    <item
+        android:id="@+id/menu_item_view_activity_edit"
+        android:title="编辑条目"
+        android:orderInCategory="1"/>
+    <item
+        android:id="@+id/menu_item_view_activity_weblogin"
+        android:title="准备登陆"
+        android:orderInCategory="2"/>
+    <item
+        android:id="@+id/menu_item_view_activity_delete"
+        android:title="删除条目"
+        android:orderInCategory="3"/>
+    <item
+        android:id="@+id/menu_item_view_activity_items"
+        android:title="返回条目列表"
+        android:orderInCategory="4"/>
+</menu>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow_background">
+    <!--条目相关操作界面-->
+    <TextView
+        android:text="条目相关操作"
+        android:textSize="40dp"
+        android:textColor="@color/textColorBlack"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!--分隔线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/divide_line"/>
+    <Button
+        android:text="修改主密码"
+        android:textSize="20dp"
+        android:textColor="@color/textColorBlack"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:id="@+id/bt_relative_items_activity_change_password"
+        android:background="@drawable/button_shape"/>
+    <Button
+        android:text="备份条目"
+        android:textSize="20dp"
+        android:textColor="@color/textColorBlack"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:id="@+id/bt_relative_items_activity_secure"
+        android:background="@drawable/button_shape"/>
+
+</LinearLayout>

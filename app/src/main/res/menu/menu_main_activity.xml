@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.leidong.superkeymanager.activity.MainActivity">
+
+    <item
+        android:id="@+id/menu_main_activity_items"
+        android:orderInCategory="1"
+        android:title="进入数据库"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_main_activity_relative_items"
+        android:title="数据条目相关操作"
+        android:orderInCategory="2"/>
+    <item
+        android:id="@+id/menu_main_activity_settings"
+        android:orderInCategory="3"
+        android:title="进入设置"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_main_activity_help"
+        android:orderInCategory="4"
+        android:title="帮助"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_main_activity_exit"
+        android:orderInCategory="5"
+        android:title="退出应用"
+        app:showAsAction="never"/>
+</menu>

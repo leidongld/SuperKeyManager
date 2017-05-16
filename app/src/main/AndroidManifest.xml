@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.leidong.superkeymanager"><!--将该app的权限提升到system级-->
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!--主密码操作类-->
+        <provider
+            android:authorities="com.example.leidong.superkeymanager.user"
+            android:name=".database.UserProvider" />
+
+        <!--条目操作类-->
+        <provider
+            android:authorities="com.example.leidong.superkeymanager.items"
+            android:name=".database.ItemsProvider" />
+
+        <!--欢迎界面-->
+        <activity android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--主界面-->
+        <activity android:name=".activity.MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--登录界面-->
+        <activity android:name=".activity.LoginActivity"
+            android:label="用户登录"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--用户注册界面-->
+        <activity android:name=".activity.RegisterActivity"
+            android:label="用户注册"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--指纹认证界面-->
+        <activity android:name=".activity.FingerPrintActivity"
+            android:label="指纹认证登录"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--帮助界面-->
+        <activity android:name=".activity.HelpActivity"
+            android:label="帮助"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--设置界面-->
+        <activity android:name=".activity.SettingsActivity"
+            android:label="设置"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--条目界面-->
+        <activity android:name=".activity.ItemsActivity"
+            android:label="条目列表"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--条目相关界面-->
+        <activity android:name=".activity.RelateItemsActivity"
+            android:label="条目相关"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--查看特定条目界面-->
+        <activity android:name=".activity.ItemViewActivity"
+            android:label="查看条目"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/vnd.com.example.superkeymanager.itemsprovider" />
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.dir/vnd.com.example.superkeymanager.itemsprovider" />
+            </intent-filter>
+        </activity>
+
+        <!--编辑特定条目界面-->
+        <activity android:name=".activity.ItemEditActivity"
+            android:label="编辑/添加条目"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/vnd.com.example.superkeymanager.itemsprovider" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.INSERT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.dir/vnd.com.example.superkeymanager.itemsprovider" />
+            </intent-filter>
+        </activity>
+
+        <!--修改主密码的界面-->
+        <activity android:name=".activity.MasterPasswordChangeActivity"
+            android:label="修改主密码"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--选择应用界面-->
+        <activity android:name=".activity.AppListActivity"
+            android:label="选择应用"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--安全键盘-->
+        <service android:name=".service.SecureKeyboard"
+            android:label="@string/secure_ime"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <meta-data android:name="android.view.im"
+                android:resource="@xml/secure_keyboard_method"/>
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
