@@ -8,7 +8,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Created by leidong on 2017/5/9.
+ * Created by leidong on 2017/5/9
  */
 
 public class AESClientServerUtil {

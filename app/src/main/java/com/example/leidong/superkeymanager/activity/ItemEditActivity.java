@@ -75,7 +75,7 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnClickL
 
         //获取AES密钥
         sharedPreferences = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-        aesKey = sharedPreferences.getString("AESKey", "");
+        aesKey = sharedPreferences.getString(Constants.AES_SP_AESKEY, "");
 
         //获取组件
         initView();
@@ -100,6 +100,8 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnClickL
                 setTitle("添加条目");
             }
             try {
+                //从本地数据库中获得的条目参数
+                int id = mCursor.getInt(ItemsColumn.ITEM_ID_COLUMN);
                 String name = mCursor.getString(ItemsColumn.ITEM_NAME_COLUMN);
                 String username = AESUtil.decrypt(AESUtil.AES_KEY, mCursor.getString(ItemsColumn.ITEM_USERNAME_COLUMN));
                 String password = AESUtil.decrypt(AESUtil.AES_KEY, mCursor.getString(ItemsColumn.ITEM_PASSWORD_COLUMN));

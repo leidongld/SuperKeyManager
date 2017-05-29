@@ -71,12 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final SharedPreferences sharedPreferences2 = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
         String publicKey = sharedPreferences1.getString(Constants.RSA_SP_PUBLICKEY, "");
         String aesKey = sharedPreferences2.getString(Constants.AES_SP_AESKEY, "");
-        Toast.makeText(MainActivity.this, "RSA公钥" + publicKey, Toast.LENGTH_SHORT).show();
-        Toast.makeText(MainActivity.this, "AES" + aesKey, Toast.LENGTH_SHORT).show();
 
         //第一次与服务器建立连接时要求服务器产生RSA密钥对并将密钥对发送到客户端保存
         if(publicKey.equals("")) {
-            //Toast.makeText(MainActivity.this, "本地开始保存RSA公钥", Toast.LENGTH_SHORT).show();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -91,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //AES的本地静态存储作为一个创新点
                     generateAESKey(sharedPreferences2);
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -110,9 +107,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param sharedPreferences2 AES私钥相关
      */
     private void storeAESKey(SharedPreferences sharedPreferences1, SharedPreferences sharedPreferences2) {
-        //拿到本地AES密钥
+        //拿到本地AES密钥（验证无误）
         String aesKey = sharedPreferences2.getString(Constants.AES_SP_AESKEY, "");
-        //拿到本地RSA公钥
+        //拿到本地RSA公钥（验证无误）
         String rsaPublicKey = sharedPreferences1.getString(Constants.RSA_SP_PUBLICKEY, "");
         String encryptedAESKey = "";
         if(!aesKey.equals("") && !rsaPublicKey.equals("")) {//保证AES密钥和RSA公钥均正确拿到
@@ -132,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param encryptedAESKey
      */
     private void passEncryptedAESKeyToServer(final String encryptedAESKey) {
-        //Log.d(TAG, encryptedAESKey + "--->>>");
+        //已验证
+        //Log.d(TAG, "<<<>>>经过加密的AES密钥：" + encryptedAESKey);
         final RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -140,14 +138,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(MainActivity.this, "AES密钥已经传送完毕", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, TAG + "  AES密钥已经传送完毕", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "Error");
-                        Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, TAG + "  Error", Toast.LENGTH_SHORT).show();
                     }
                 })
         {
@@ -172,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constants.AES_SP_AESKEY, aesKey);
             editor.apply();
+            //AES密钥已经正确产生
+            //Log.d(TAG, "<<<>>>AES密钥为：" + aesKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -190,17 +190,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onResponse(String response) {
                         Log.d(TAG, response);
                         if(response.equals("true")) {
-                            //Toast.makeText(MainActivity.this, "RSA密钥已由服务器产生", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, TAG + "  RSA密钥已由服务器产生", Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            //Toast.makeText(MainActivity.this, "RSA密钥未能成功生成", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, TAG + "  RSA密钥未能成功生成", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, TAG + "  Error", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Error");
                     }
                 })
@@ -253,6 +253,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param sharedPreferences
      */
     private void saveRSAPublicKeyToSP(String response, SharedPreferences sharedPreferences) {
+        //RSA公钥传递正确
+        //Log.d(TAG, "<<<>>>RSA公钥为：" + response);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constants.RSA_SP_PUBLICKEY, response);
         editor.apply();
@@ -266,11 +268,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .equals(Environment.MEDIA_MOUNTED);
         if(!sdCardExist){
             Toast.makeText(MainActivity.this, "SD card is not founded.", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "SD card is not founded.");
+            Log.d(TAG, TAG + "  SD card is not founded.");
         }
         else{
             Toast.makeText(MainActivity.this, "SD card is founded.", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "SD card is founded.");
+            Log.d(TAG, TAG + "  SD card is founded.");
         }
     }
 

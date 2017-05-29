@@ -70,8 +70,8 @@ public class ItemsActivity extends AppCompatActivity implements AdapterView.OnIt
 
     /**
      * 产生菜单
-     * @param menu
-     * @return
+     * @param menu 菜单
+     * @return 产生结果
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -81,8 +81,8 @@ public class ItemsActivity extends AppCompatActivity implements AdapterView.OnIt
 
     /**
      * 菜单点击操作
-     * @param item
-     * @return
+     * @param item 菜单条目
+     * @return 点击结果
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item){

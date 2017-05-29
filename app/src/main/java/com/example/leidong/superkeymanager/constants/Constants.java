@@ -3,7 +3,7 @@ package com.example.leidong.superkeymanager.constants;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by leidong on 2017/4/26.
+ * Created by leidong on 2017/4/26
  */
 
 public class Constants {

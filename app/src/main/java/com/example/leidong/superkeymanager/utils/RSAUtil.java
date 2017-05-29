@@ -17,7 +17,7 @@ import java.util.Map;
 import javax.crypto.Cipher;
 
 /**
- * Created by leidong on 2016/12/23.
+ * Created by leidong on 2016/12/23
  */
 
 public class RSAUtil {
@@ -139,7 +139,8 @@ public class RSAUtil {
         KeyFactory keyFactory = KeyFactory.getInstance(RSA_KEY_ALGORITHM);
         PublicKey publicKey = keyFactory.generatePublic(x509KeySpec);
         // 对数据加密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        //Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm(), "BC");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return cipher.doFinal(data);
     }
@@ -171,7 +172,8 @@ public class RSAUtil {
         KeyFactory keyFactory = KeyFactory.getInstance(RSA_KEY_ALGORITHM);
         PrivateKey privateKey = keyFactory.generatePrivate(pkcs8KeySpec);
         // 对数据加密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        //Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm(), "BC");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, privateKey);
         return cipher.doFinal(data);
     }
@@ -203,7 +205,8 @@ public class RSAUtil {
         KeyFactory keyFactory = KeyFactory.getInstance(RSA_KEY_ALGORITHM);
         PublicKey publicKey = keyFactory.generatePublic(x509KeySpec);
         // 对数据解密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        //Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, publicKey);
         return cipher.doFinal(data);
     }
@@ -235,7 +238,8 @@ public class RSAUtil {
         KeyFactory keyFactory = KeyFactory.getInstance(RSA_KEY_ALGORITHM);
         PrivateKey privateKey = keyFactory.generatePrivate(pkcs8KeySpec);
         // 对数据解密
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        //Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return cipher.doFinal(data);
     }
