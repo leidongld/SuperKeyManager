@@ -268,11 +268,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .equals(Environment.MEDIA_MOUNTED);
         if(!sdCardExist){
             Toast.makeText(MainActivity.this, "SD card is not founded.", Toast.LENGTH_LONG).show();
-            Log.d(TAG, TAG + "  SD card is not founded.");
+            Log.d(TAG, TAG + "  SD卡已找到");
         }
         else{
             Toast.makeText(MainActivity.this, "SD card is founded.", Toast.LENGTH_LONG).show();
-            Log.d(TAG, TAG + "  SD card is founded.");
+            Log.d(TAG, TAG + "  SD未找到");
         }
     }
 

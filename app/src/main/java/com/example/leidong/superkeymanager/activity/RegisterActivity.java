@@ -241,13 +241,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(RegisterActivity.this, response, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "主密码已经传入服务器", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(RegisterActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, TAG + "  Error", Toast.LENGTH_SHORT).show();
                     }
                 })
         {

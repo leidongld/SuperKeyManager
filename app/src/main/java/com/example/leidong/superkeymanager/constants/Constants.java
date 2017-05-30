@@ -13,7 +13,7 @@ public class Constants {
     //服务器上的主密码url
     public static final String MASTAER_PASSWORD_SERVER_URL = "http://" + LOCAL_HOST + "/SuperKeyManager/MasterPasswordServlet";
     //服务器上的条目url
-    public static final String ITEM_SERVER_URL = "http://" + LOCAL_HOST + "/SuperKeyManager/ItemsServlet";
+    public static final String ITEM_SERVER_URL = "http://" + LOCAL_HOST + "/SuperKeyManager/ItemServlet";
     //服务器上的RSA url
     public static final String RSA_SERVER_URL = "http://" + LOCAL_HOST + "/SuperKeyManager/RSAServlet";
 
@@ -37,9 +37,11 @@ public class Constants {
     //Volley对items的操作
     public static final String ADD_ITEM = "add item";
     public static final String DELETE_ITEM = "delete item";
-    public static final String MODIFY_ITEM = "modify_item";
+    public static final String MODIFY_ITEM = "modify item";
     public static final String GET_ITEM = "get item";
     public static final String FIND_ITEM = "find item";
+    public static final String ITEM_SP_PARAMS = "item sp params";
+    public static final String ITEM_SP_ID = "item sp id";
 
     public static final String item_id = "item_id";
     public static final String item_itemname = "item_itemname";
@@ -60,6 +62,7 @@ public class Constants {
     public static final String AES_SP_AESKEY = "AESKey";
     public static final String ADD_AES = "add aes";
     public static final String ENCRYPTED_AESKEY = "encrypted_aeskey";
+
 
     /**
      * item_id : 1

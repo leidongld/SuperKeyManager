@@ -19,11 +19,21 @@ android {
     }
 }
 
+apply plugin: 'org.greenrobot.greendao'
+
+greendao {
+    schemaVersion 1
+    daoPackage 'com.example.leidong.superkeymanager.gen'
+    targetGenDir 'src/main/java'
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'org.greenrobot:greendao:3.0.1'
+    compile 'org.greenrobot:greendao-generator:3.0.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.android.support:appcompat-v7:24.2.1'

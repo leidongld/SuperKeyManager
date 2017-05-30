@@ -50,7 +50,7 @@ public class AppListAdapter extends BaseAdapter {
         ViewHolder holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.app_list_item, null);
+            convertView = mInflater.inflate(R.layout.item, null);
 
             holder.appName = (TextView) convertView
                     .findViewById(R.id.appName_TextView);
