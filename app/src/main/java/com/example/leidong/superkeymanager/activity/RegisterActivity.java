@@ -241,7 +241,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(RegisterActivity.this, "主密码已经传入服务器", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(RegisterActivity.this, "主密码已经传入服务器", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {

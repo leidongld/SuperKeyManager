@@ -71,7 +71,8 @@
         <!--条目界面-->
         <activity android:name=".activity.ItemsActivity"
             android:label="条目列表"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance">
         </activity>
 
         <!--条目相关界面-->
@@ -84,32 +85,18 @@
         <activity android:name=".activity.ItemViewActivity"
             android:label="查看条目"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/vnd.com.example.superkeymanager.itemsprovider" />
-            </intent-filter>
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/vnd.com.example.superkeymanager.itemsprovider" />
-            </intent-filter>
         </activity>
 
         <!--编辑特定条目界面-->
         <activity android:name=".activity.ItemEditActivity"
-            android:label="编辑/添加条目"
+            android:label="编辑条目"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/vnd.com.example.superkeymanager.itemsprovider" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.INSERT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/vnd.com.example.superkeymanager.itemsprovider" />
-            </intent-filter>
+        </activity>
+
+        <!--添加条目界面-->
+        <activity android:name=".activity.ItemAddActivity"
+            android:label="添加条目">
         </activity>
 
         <!--修改主密码的界面-->

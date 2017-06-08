@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/pink_background">
+        android:layout_margin="16dp">
         <!--条目界面-->
         <TextView
             android:text="条目界面"

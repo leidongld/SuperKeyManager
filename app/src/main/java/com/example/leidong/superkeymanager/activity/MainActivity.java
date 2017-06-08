@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }).start();
         }
         else{
-            Toast.makeText(MainActivity.this, "RSA公钥已存储于Android手机", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "RSA公钥已存储于Android手机", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(MainActivity.this, TAG + "  AES密钥已经传送完毕", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, TAG + "  AES密钥已经传送完毕", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -190,10 +190,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onResponse(String response) {
                         Log.d(TAG, response);
                         if(response.equals("true")) {
-                            Toast.makeText(MainActivity.this, TAG + "  RSA密钥已由服务器产生", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.this, TAG + "  RSA密钥已由服务器产生", Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            Toast.makeText(MainActivity.this, TAG + "  RSA密钥未能成功生成", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.this, TAG + "  RSA密钥未能成功生成", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -267,12 +267,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean sdCardExist = Environment.getExternalStorageState()
                 .equals(Environment.MEDIA_MOUNTED);
         if(!sdCardExist){
-            Toast.makeText(MainActivity.this, "SD card is not founded.", Toast.LENGTH_LONG).show();
-            Log.d(TAG, TAG + "  SD卡已找到");
+            //Toast.makeText(MainActivity.this, "SD card is not founded.", Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText(MainActivity.this, "SD card is founded.", Toast.LENGTH_LONG).show();
-            Log.d(TAG, TAG + "  SD未找到");
+            //Toast.makeText(MainActivity.this, "SD card is founded.", Toast.LENGTH_LONG).show();
         }
     }
 

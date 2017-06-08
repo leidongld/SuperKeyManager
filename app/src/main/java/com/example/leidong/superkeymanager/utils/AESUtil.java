@@ -11,17 +11,15 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Created by leidong on 2016/11/1.
+ * Created by leidong on 2016/11/1
  */
 
 public class AESUtil {
-    //固定AES密钥为123456
-    public static final String AES_KEY = "qwertyuiopasdfghjklzxcvbnm123456";
-
     private static final String TAG = "AESCrypt";
 
     //AESCrypt-ObjC uses CBC and PKCS7Padding
-    private static final String AES_MODE = "AES/CBC/PKCS7Padding";
+    //private static final String AES_MODE = "AES/CBC/PKCS7Padding";
+    private static final String AES_MODE = "AES/ECB/PKCS5Padding";
     private static final String CHARSET = "UTF-8";
 
     //AESCrypt-ObjC uses SHA-256 (and so a 256-bit key)
@@ -48,9 +46,6 @@ public class AESUtil {
         byte[] bytes = password.getBytes("UTF-8");
         digest.update(bytes, 0, bytes.length);
         byte[] key = digest.digest();
-
-        log("SHA-256 key ", key);
-
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
         return secretKeySpec;
     }
@@ -110,7 +105,6 @@ public class AESUtil {
 
     /**
      * Decrypt and decode ciphertext using 256-bit AES with key generated from password
-     *
      * @param password used to generated key
      * @param base64EncodedCipherText the encrpyted message encoded with base64
      * @return message in Plain text (String UTF-8)
@@ -145,7 +139,6 @@ public class AESUtil {
 
     /**
      * More flexible AES decrypt that doesn't encode
-     *
      * @param key AES key typically 128, 192 or 256 bit
      * @param iv Initiation Vector
      * @param decodedCipherText in bytes (assumed it's already been decoded)

@@ -1,7 +1,9 @@
 package com.example.leidong.superkeymanager.utils;
 
 import android.util.Base64;
+
 import java.security.Key;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -29,8 +31,7 @@ public class AESClientServerUtil {
      */
     private static Key toKey(byte[] key) throws Exception{
         //实例化AES密钥材料
-        SecretKey secretKey = new SecretKeySpec(key, KEY_ALGORITHM);
-        return secretKey;
+        return new SecretKeySpec(key, KEY_ALGORITHM);
     }
 
     /**

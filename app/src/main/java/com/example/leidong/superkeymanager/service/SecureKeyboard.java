@@ -9,6 +9,7 @@ import android.inputmethodservice.KeyboardView;
 import android.media.AudioManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
@@ -18,14 +19,14 @@ import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.utils.AESUtil;
 
 /**
- * Created by leidong on 2016/12/19.
+ * Created by leidong on 2016/12/19
  */
 
 public class SecureKeyboard extends InputMethodService implements KeyboardView.OnKeyboardActionListener{
     private static final String TAG = "SecureKeyboard";
 
-    private SharedPreferences sharedPreferences = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-    private String aesKey = sharedPreferences.getString("AESKey", "");
+    private SharedPreferences sharedPreferences;
+    private String AESKey;
 
     private KeyboardView keyboardView;
     //keyboard1为数字和字母键盘、keyboard2位符号键盘
@@ -42,9 +43,13 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
+        sharedPreferences = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
+        AESKey = sharedPreferences.getString(Constants.AES_SP_AESKEY, "");
         //取得用户名和密码的密文
         encryptedUsername = intent.getStringExtra("encrypted_username");
         encryptedPassword = intent.getStringExtra("encrypted_password");
+        Log.d(TAG, encryptedUsername + "<<<>>><<<>>>");
+        Log.d(TAG, encryptedPassword + "<<<>>><<<>>>");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -92,10 +97,8 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
     public void onPress(int primaryCode) {
         switch (primaryCode){
             case 1000:
-                //Toast.makeText(this, "1000 onPress", Toast.LENGTH_LONG).show();
                 break;
             case 1001:
-                //Toast.makeText(this, "1001 onPress", Toast.LENGTH_LONG).show();
                 break;
             default:
                 break;
@@ -148,18 +151,22 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
                 keyboardView.setKeyboard(keyboard1);
                 break;
             case 1000://使用安全键盘填入用户名
-                String username = null;
+                String username = "";
                 try {
-                    username = AESUtil.decrypt(AESUtil.AES_KEY, encryptedUsername);
+                    if(AESKey.length() > 0) {
+                        username = AESUtil.decrypt(AESKey, encryptedUsername);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 ic.setComposingText(username, 30);
                 break;
             case 1001://使用安全键盘填入密码
-                String password = null;
+                String password = "";
                 try {
-                    password = AESUtil.decrypt(AESUtil.AES_KEY, encryptedPassword);
+                    if(AESKey.length() > 0) {
+                        password = AESUtil.decrypt(AESKey, encryptedPassword);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -172,6 +179,7 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
                     code = Character.toUpperCase(code);
                 }
                 ic.commitText(String.valueOf(code),1);
+                break;
         }
     }
 

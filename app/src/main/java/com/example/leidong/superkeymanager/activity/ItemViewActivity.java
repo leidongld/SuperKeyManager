@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,13 +21,13 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.leidong.superkeymanager.MyApplication;
+
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.beans.ItemBean;
 import com.example.leidong.superkeymanager.constants.Constants;
-import com.example.leidong.superkeymanager.gen.ItemBeanDao;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
 import com.example.leidong.superkeymanager.service.SecureKeyboard;
+import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 
 /**
@@ -36,8 +37,9 @@ import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 public class ItemViewActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "ItemViewActivity";
 
-    private ItemBeanDao itemBeanDao;
-    private long id;
+    private long itemId;
+
+    private String AESKey;
 
     private TextView tv_item_view_name;
     private TextView tv_item_view_username;
@@ -59,8 +61,15 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
     //密码对应的密文
     private String encryptedPassword;
 
+    private String name;
+    private String username;
+    private String password;
+    private String url;
+    private String pkg;
+    private String note;
+
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_view);
         QuitActivities.getInstance().addActivity(this);
@@ -75,19 +84,28 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
         //Switch变化的处理
         switchChange();
 
-        SharedPreferences sp = getSharedPreferences(Constants.ITEM_SP_PARAMS, Context.MODE_PRIVATE);
-        id = sp.getLong(Constants.ITEM_SP_ID, -1);
+        Intent intent = getIntent();
+        itemId = intent.getLongExtra(Constants.item_id, 0);
+        Log.d(TAG, "itemId = " + itemId);
 
-        itemBeanDao = MyApplication.getInstances().getDaoSession().getItemBeanDao();
-        ItemBean itemBean = GreenDaoUtils.queryItemBeanById(id);
+        SharedPreferences sp1 = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
+        AESKey = sp1.getString(Constants.AES_SP_AESKEY, "");
 
-        String name = itemBean.getItemItemname();
-        String username = itemBean.getItemUsername();
-        String password = itemBean.getItemPassword();
-        String url = itemBean.getItemUrl();
-        String pkg = itemBean.getItemPackagename();
-        String note = itemBean.getItemNote();
+        ItemBean itemBean;
+        itemBean = GreenDaoUtils.queryItemBeanById(itemId);
 
+        try {
+            name = AESClientServerUtil.decrypt(itemBean.getItemItemname(), AESKey);
+            encryptedUsername = itemBean.getItemUsername();
+            username = AESClientServerUtil.decrypt(itemBean.getItemUsername(), AESKey);
+            encryptedPassword = itemBean.getItemPassword();
+            password = AESClientServerUtil.decrypt(itemBean.getItemPassword(), AESKey);
+            url = AESClientServerUtil.decrypt(itemBean.getItemUrl(), AESKey);
+            pkg = AESClientServerUtil.decrypt(itemBean.getItemPackagename(), AESKey);
+            note = AESClientServerUtil.decrypt(itemBean.getItemNote(), AESKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         tv_item_view_name.setText(name);
         tv_item_view_username.setText(username);
         tv_item_view_password.setText(password);
@@ -143,6 +161,7 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
             //编辑条目按钮的点击
             case R.id.bt_item_view_edit:
                 Intent intent1 = new Intent(ItemViewActivity.this, ItemEditActivity.class);
+                intent1.putExtra(Constants.item_id, itemId);
                 startActivity(intent1);
                 finish();
                 break;

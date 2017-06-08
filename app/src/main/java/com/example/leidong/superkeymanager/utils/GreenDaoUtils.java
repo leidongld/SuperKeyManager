@@ -4,8 +4,6 @@ import com.example.leidong.superkeymanager.MyApplication;
 import com.example.leidong.superkeymanager.beans.ItemBean;
 import com.example.leidong.superkeymanager.gen.ItemBeanDao;
 
-import org.greenrobot.greendao.query.QueryBuilder;
-
 import java.util.List;
 
 /**
@@ -20,10 +18,11 @@ public class GreenDaoUtils {
      */
     public static ItemBean queryItemBeanById(long id) {
         ItemBeanDao itemBeanDao = MyApplication.getInstances().getDaoSession().getItemBeanDao();
-        QueryBuilder<ItemBean> qb = itemBeanDao.queryBuilder();
+        /*QueryBuilder<ItemBean> qb = itemBeanDao.queryBuilder();
         qb.where(ItemBeanDao.Properties.ItemId.eq(id));
         List<ItemBean> list = qb.list();
-        return list.get(0);
+        return list.get(0);*/
+        return itemBeanDao.load(id);
     }
 
     /**
@@ -86,7 +85,6 @@ public class GreenDaoUtils {
     public static long obtainNewestId() {
         ItemBeanDao itemBeanDao = MyApplication.getInstances().getDaoSession().getItemBeanDao();
         List<ItemBean> list = itemBeanDao.loadAll();
-        long id = list.get(list.size()-1).getItemId();
-        return id;
+        return list.get(list.size()-1).getItemId();
     }
 }

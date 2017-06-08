@@ -168,7 +168,6 @@
                 android:layout_marginLeft="20dp"
                 android:hint="请在此输入新的包名"
                 android:textSize="20dp"
-                android:inputType="textPassword"
                 android:textColor="@color/textColorBlack"
                 android:id="@+id/et_item_edit_pkg"/>
         </TableRow>
@@ -200,7 +199,6 @@
                 android:layout_marginLeft="20dp"
                 android:hint="请在此输入新的备注"
                 android:textSize="20dp"
-                android:inputType="textPassword"
                 android:textColor="@color/textColorBlack"
                 android:id="@+id/et_item_edit_note"/>
         </TableRow>

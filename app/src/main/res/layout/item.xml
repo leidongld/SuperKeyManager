@@ -24,19 +24,19 @@
             android:id="@+id/item_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
-            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
             android:fontFamily="sans-serif"
-            android:layout_gravity="center_horizontal"/>
+            android:gravity="center_horizontal"/>
 
         <TextView
             android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:fontFamily="sans-serif"
             android:textColor="@color/black"
-            android:layout_gravity="center_horizontal"/>
+            android:gravity="center"/>
     </LinearLayout>
 
 </LinearLayout>

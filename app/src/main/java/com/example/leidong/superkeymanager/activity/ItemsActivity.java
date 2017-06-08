@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.example.leidong.superkeymanager.beans.ItemBean;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.gen.ItemBeanDao;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
+import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 
 import java.util.ArrayList;
@@ -44,8 +46,10 @@ public class ItemsActivity extends AppCompatActivity {
 
     private long itemId;
 
+    private String AESKey;
+
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items);
 
@@ -57,17 +61,17 @@ public class ItemsActivity extends AppCompatActivity {
         //获取控件
         initWidgets();
 
-        SharedPreferences sp = getSharedPreferences(Constants.ITEM_SP_PARAMS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putLong(Constants.ITEM_SP_ID, -1);
-        editor.apply();
+        SharedPreferences sp = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
+        AESKey = sp.getString(Constants.AES_SP_AESKEY, "");
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         itemDatas = obtainItemDatas();
-        if(itemDatas.size() > 0) {
+        Log.d(TAG, "<<<>>>\n" + itemDatas.get(0).get(ITEM_NAME));
+
+        if (itemDatas.size() >= 0) {
             SimpleAdapter adapter = new SimpleAdapter(this, itemDatas, R.layout.item,
                     new String[]{ITEM_ICON, ITEM_ID, ITEM_NAME}, new int[]{R.id.item_icon, R.id.item_id, R.id.item_name});
             lv_items_activity_items.setAdapter(adapter);
@@ -78,11 +82,8 @@ public class ItemsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 itemId = (long) itemDatas.get(position).get(ITEM_ID);
-                SharedPreferences sp = getSharedPreferences(Constants.ITEM_SP_PARAMS, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putLong(Constants.ITEM_SP_ID, itemId);
-                editor.apply();
                 Intent intent = new Intent(ItemsActivity.this, ItemViewActivity.class);
+                intent.putExtra(Constants.item_id, itemId);
                 startActivity(intent);
             }
         });
@@ -94,7 +95,8 @@ public class ItemsActivity extends AppCompatActivity {
                 itemId = (long) itemDatas.get(position).get(ITEM_ID);
                 GreenDaoUtils.deleteItem(itemId);
                 itemDatas = obtainItemDatas();
-                if(itemDatas.size() >= 0) {
+
+                if (itemDatas.size() >= 0) {
                     SimpleAdapter adapter = new SimpleAdapter(MyApplication.getContext(), itemDatas, R.layout.item,
                             new String[]{ITEM_ICON, ITEM_ID, ITEM_NAME}, new int[]{R.id.item_icon, R.id.item_id, R.id.item_name});
                     lv_items_activity_items.setAdapter(adapter);
@@ -109,16 +111,21 @@ public class ItemsActivity extends AppCompatActivity {
      * 得到Items的详细信息
      * @return
      */
-    private ArrayList<HashMap<String,Object>> obtainItemDatas() {
+    private ArrayList<HashMap<String, Object>> obtainItemDatas(){
         ArrayList<HashMap<String, Object>> itemDatas = new ArrayList<>();
         itemBeanDao = MyApplication.getInstances().getDaoSession().getItemBeanDao();
         List<ItemBean> itemList = itemBeanDao.loadAll();
         int length = itemList.size();
-        for(int i = 0; i < length; i++){
+        for (int i = 0; i < length; i++) {
+
             HashMap<String, Object> map = new HashMap<>();
             map.put(ITEM_ICON, R.mipmap.app);
             map.put(ITEM_ID, itemList.get(i).getItemId());
-            map.put(ITEM_NAME, itemList.get(i).getItemItemname());
+            try {
+                map.put(ITEM_NAME, AESClientServerUtil.decrypt(itemList.get(i).getItemItemname(), AESKey));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             itemDatas.add(map);
         }
         return itemDatas;
@@ -133,30 +140,28 @@ public class ItemsActivity extends AppCompatActivity {
 
     /**
      * 产生菜单
+     *
      * @param menu 菜单
      * @return 产生结果
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items_activity, menu);
         return true;
     }
 
     /**
      * 菜单点击操作
+     *
      * @param item 菜单条目
      * @return 点击结果
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             //增加条目
             case R.id.menu_items_activity_add:
-                SharedPreferences sp = getSharedPreferences(Constants.ITEM_SP_PARAMS, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putLong(Constants.ITEM_SP_ID, (long)-1);
-                editor.apply();
-                Intent intent = new Intent(ItemsActivity.this, ItemEditActivity.class);
+                Intent intent = new Intent(ItemsActivity.this, ItemAddActivity.class);
                 startActivity(intent);
                 return true;
 

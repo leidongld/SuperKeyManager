@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
+import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
 
@@ -45,7 +48,8 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     private Switch switch_item_edit;
 
-    private long id;
+    private long itemId;
+    private String AESKey;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,8 +67,12 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
         Window win = getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
-        SharedPreferences sp = getSharedPreferences(Constants.ITEM_SP_PARAMS, Context.MODE_PRIVATE);
-        id = sp.getLong(Constants.ITEM_SP_ID, (long) -1);
+        Intent intent = getIntent();
+        itemId = intent.getLongExtra(Constants.item_id, 0);
+        Log.d(TAG, "itemId = " + itemId);
+
+        SharedPreferences sp1 = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
+        AESKey = sp1.getString(Constants.AES_SP_AESKEY, "");
     }
 
     /**
@@ -122,6 +130,7 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     /**
      * 对按钮的点击监听
+     *
      * @param v 视图
      */
     @Override
@@ -129,38 +138,48 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
         switch (v.getId()) {
             //对完成修改按钮的监控
             case R.id.bt_item_edit_finish:
-                String newName = et_item_edit_name.getText().toString().trim();
-                String newUsername = et_item_edit_username.getText().toString().trim();
-                String newPassword = et_item_edit_password.getText().toString().trim();
-                String newUrl = et_item_edit_url.getText().toString().trim();
-                String newPkg = et_item_edit_pkg.getText().toString().trim();
-                String newNote = et_item_edit_note.getText().toString().trim();
-                boolean flag = isParamsNull(newName, newUsername, newPassword, newUrl, newPkg, newNote);
-                if (id != (long)-1) {
-                    if (flag) {
-                        finish();
+                    String newName0 = et_item_edit_name.getText().toString().trim();
+                    String newUsername0 = et_item_edit_username.getText().toString().trim();
+                    String newPassword0 = et_item_edit_password.getText().toString().trim();
+                    String newUrl0 = et_item_edit_url.getText().toString().trim();
+                    String newPkg0 = et_item_edit_pkg.getText().toString().trim();
+                    String newNote0 = et_item_edit_note.getText().toString().trim();
+                    if (isParamsNull(newName0, newUsername0, newPassword0, newUrl0, newPkg0, newNote0)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("警告");
+                        builder.setMessage("输入数据格式不正确");
+                        builder.setPositiveButton("重新输入", null);
+                        builder.create().show();
                     } else {
-                        //更新数据
-                        GreenDaoUtils.updateItem(id, newName, newUsername, newPassword, newUrl, newPkg, newNote);
-                    }
-                } else {
-                    if (flag) {
+                        String newName = null;
+                        String newUsername = null;
+                        String newPassword = null;
+                        String newUrl = null;
+                        String newPkg = null;
+                        String newNote = null;
+                        try {
+                            newName = AESClientServerUtil.encrypt(et_item_edit_name.getText().toString().trim(), AESKey);
+                            newUsername = AESClientServerUtil.encrypt(et_item_edit_username.getText().toString().trim(), AESKey);
+                            newPassword = AESClientServerUtil.encrypt(et_item_edit_password.getText().toString().trim(), AESKey);
+                            newUrl = AESClientServerUtil.encrypt(et_item_edit_url.getText().toString().trim(), AESKey);
+                            newPkg = AESClientServerUtil.encrypt(et_item_edit_pkg.getText().toString().trim(), AESKey);
+                            newNote = AESClientServerUtil.encrypt(et_item_edit_note.getText().toString().trim(), AESKey);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
+
+                        Toast.makeText(ItemEditActivity.this, "已完成条目的修改", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(ItemEditActivity.this, ItemsActivity.class);
+                        startActivity(intent);
                         finish();
-                    } else {
-                        GreenDaoUtils.insertItem(newName, newUsername, newPassword, newUrl, newPkg, newNote);
-                        long newId = GreenDaoUtils.obtainNewestId();
-                        SharedPreferences sp = getSharedPreferences(Constants.ITEM_SP_PARAMS, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putLong(Constants.ITEM_SP_ID, newId);
-                        editor.apply();
                     }
-                }
-                Toast.makeText(ItemEditActivity.this, "已完成条目的修改", Toast.LENGTH_LONG).show();
                 break;
 
             //对返回条目查看按钮的监控
             case R.id.bt_item_edit_view:
-                Intent viewIntent = new Intent(ItemEditActivity.this, ItemViewActivity.class);
+                Intent viewIntent = new Intent(ItemEditActivity.this, ItemsActivity.class);
                 startActivity(viewIntent);
                 finish();
                 break;
@@ -169,19 +188,22 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     /**
      * 参数是否为空
-     * @param newName 条目名
+     *
+     * @param newName     条目名
      * @param newUsername 用户名
      * @param newPassword 密码
-     * @param newUrl URL
-     * @param newPkg 包名
-     * @param newNote 备注
+     * @param newUrl      URL
+     * @param newPkg      包名
+     * @param newNote     备注
      * @return 是否为空的标志
      */
     private boolean isParamsNull(String newName, String newUsername, String newPassword, String newUrl, String newPkg, String newNote) {
-        if(newName.length() == 0 || newUsername.length() == 0 || newPassword.length() == 0){
+        //名称、用户名、密码三项不能为空
+        if (newName.length() == 0 || newUsername.length() == 0 || newPassword.length() == 0) {
             return true;
         }
-        else if(newUrl.length() == 0 && newPkg.length() == 0){
+        //url和包名不能同时为空
+        else if (newUrl.length() == 0 && newPkg.length() == 0) {
             return true;
         }
         return false;
@@ -202,7 +224,7 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
             //删除该条目
             case R.id.menu_item_edit_activity_delete:
-                GreenDaoUtils.deleteItem(id);
+                GreenDaoUtils.deleteItem(itemId);
                 finish();
                 break;
 
