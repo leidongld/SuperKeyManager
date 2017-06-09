@@ -76,7 +76,8 @@
         </activity>
 
         <!--条目相关界面-->
-        <activity android:name=".activity.RelateItemsActivity"
+        <activity
+            android:name=".activity.RelateItemsActivity"
             android:label="条目相关"
             android:screenOrientation="portrait">
         </activity>
@@ -88,15 +89,19 @@
         </activity>
 
         <!--编辑特定条目界面-->
-        <activity android:name=".activity.ItemEditActivity"
+        <activity
+            android:name=".activity.ItemEditActivity"
             android:label="编辑条目"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:screenOrientation="portrait">
         </activity>
 
         <!--添加条目界面-->
-        <activity android:name=".activity.ItemAddActivity"
-            android:label="添加条目">
+        <activity
+            android:name=".activity.ItemAddActivity"
+            android:label="添加条目"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:screenOrientation="portrait">
         </activity>
 
         <!--修改主密码的界面-->

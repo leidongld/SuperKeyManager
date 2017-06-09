@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     private Button bt_item_edit_finish;
     private Button bt_item_edit_view;
+    private ImageView pkglist;
 
     private Switch switch_item_edit;
 
@@ -96,11 +98,12 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
         switch_item_edit = (Switch) findViewById(R.id.switch_item_edit);
         bt_item_edit_finish.setOnClickListener(ItemEditActivity.this);
         bt_item_edit_view.setOnClickListener(ItemEditActivity.this);
+        pkglist = (ImageView) findViewById(R.id.pkglist);
+        pkglist.setOnClickListener(this);
     }
 
     /**
      * 生成菜单
-     *
      * @param menu
      * @return
      */
@@ -130,7 +133,6 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     /**
      * 对按钮的点击监听
-     *
      * @param v 视图
      */
     @Override
@@ -166,19 +168,23 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
                     finish();
                 }
                 break;
-
             //对返回条目查看按钮的监控
             case R.id.bt_item_edit_view:
                 Intent viewIntent = new Intent(ItemEditActivity.this, ItemsActivity.class);
                 startActivity(viewIntent);
                 finish();
                 break;
+            case R.id.pkglist:
+                Intent intent = new Intent(ItemEditActivity.this, AppListActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
         }
     }
 
     /**
-     * 参数是否为空
-     *
+     * 参数是否合法
      * @param newName     条目名
      * @param newUsername 用户名
      * @param newPassword 密码
@@ -199,6 +205,9 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
         else if(newUrl.length() > 0 && !isUrlValid(newUrl)){
             return false;
         }
+        else if(newUrl.length() > 0 && newPkg.length() > 0){
+            return false;
+        }
         return true;
     }
 
@@ -215,7 +224,6 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     /**
      * 菜单点击操作
-     *
      * @param item
      * @return
      */
@@ -244,7 +252,6 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     /**
      * EditText的触摸触发安全键盘的弹出
-     *
      * @param v
      * @param event
      * @return

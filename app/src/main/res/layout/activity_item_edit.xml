@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -12,11 +11,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="条目名:"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="20dp"
-            android:textColor="@color/textColorBlack"/>
+            android:layout_marginTop="16dp"
+            android:text="条目名:"
+            android:textColor="@color/textColorBlack"
+            android:textSize="16sp" />
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,61 +24,65 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/name"/>
-            <!--显示条目名-->
+                android:background="@drawable/name" />
+            <!--编辑条目名-->
             <EditText
+                android:id="@+id/et_item_edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="请在此输入新的条目名"
-                android:textSize="20dp"
                 android:textColor="@color/textColorBlack"
-                android:id="@+id/et_item_edit_name"/>
+                android:textSize="20dp" />
         </TableRow>
 
         <!--用户名-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="用户名:"
-            android:textSize="16sp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:textColor="@color/textColorBlack"/>
+            android:text="用户名:"
+            android:textColor="@color/textColorBlack"
+            android:textSize="16sp" />
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/username"/>
-            <!--显示用户名-->
+                android:background="@drawable/username" />
+            <!--编辑用户名-->
             <EditText
+                android:id="@+id/et_item_edit_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="请在此输入新的用户名"
-                android:textSize="20dp"
                 android:textColor="@color/textColorBlack"
-                android:id="@+id/et_item_edit_username"/>
+                android:textSize="20dp" />
         </TableRow>
 
         <!--密码-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="密码    :"
-            android:textSize="16sp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:textColor="@color/textColorBlack"/>
+            android:text="密码    :"
+            android:textColor="@color/textColorBlack"
+            android:textSize="16sp" />
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -86,20 +90,21 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/password"/>
-            <!--显示密码-->
+                android:background="@drawable/password" />
+            <!--编辑密码-->
             <EditText
+                android:id="@+id/et_item_edit_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="请在此输入新的密码"
-                android:textSize="20dp"
                 android:inputType="textPassword"
                 android:textColor="@color/textColorBlack"
-                android:id="@+id/et_item_edit_password"/>
+                android:textSize="20dp" />
         </TableRow>
 
         <Switch
@@ -108,17 +113,18 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:text="密码不可见"/>
+            android:text="密码不可见" />
 
         <!--url-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="url:"
-            android:textSize="16sp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:textColor="@color/textColorBlack"/>
+            android:text="url:"
+            android:textColor="@color/textColorBlack"
+            android:textSize="16sp" />
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -126,30 +132,44 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/url"/>
-            <!--显示密码-->
+                android:background="@drawable/url" />
+            <!--编辑Url-->
             <EditText
+                android:id="@+id/et_item_edit_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="请在此输入新的URL"
-                android:textSize="20dp"
                 android:textColor="@color/textColorBlack"
-                android:id="@+id/et_item_edit_url"/>
+                android:textSize="20dp" />
         </TableRow>
 
         <!--包名信息-->
-        <TextView
-            android:layout_width="wrap_content"
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="包名:"
-            android:textSize="16sp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/textColorBlack"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:text="包名:"
+                android:textColor="@color/textColorBlack"
+                android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/pkglist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/pkglist"
+                android:layout_marginLeft="8dp"/>
+        </TableRow>
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -157,30 +177,32 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/pkg"/>
-            <!--显示密码-->
+                android:background="@drawable/pkg" />
+            <!--编辑包名-->
             <EditText
+                android:id="@+id/et_item_edit_pkg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="请在此输入新的包名"
-                android:textSize="20dp"
                 android:textColor="@color/textColorBlack"
-                android:id="@+id/et_item_edit_pkg"/>
+                android:textSize="20dp" />
         </TableRow>
 
-        <!--包名信息-->
+        <!--备注信息-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="备注:"
-            android:textSize="16sp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:textColor="@color/textColorBlack"/>
+            android:text="备注:"
+            android:textColor="@color/textColorBlack"
+            android:textSize="16sp" />
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -192,50 +214,50 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/note"/>
-            <!--显示密码-->
+            <!--编辑备注-->
             <EditText
+                android:id="@+id/et_item_edit_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="请在此输入新的备注"
-                android:textSize="20dp"
                 android:textColor="@color/textColorBlack"
-                android:id="@+id/et_item_edit_note"/>
+                android:textSize="20dp" />
         </TableRow>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/divide_line"/>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/divide_line" />
 
         <Button
-            android:text="完成并提交"
-            android:textSize="20dp"
-            android:textColor="@color/textColorBlack"
+            android:id="@+id/bt_item_edit_finish"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="20dp"
-            android:id="@+id/bt_item_edit_finish"
-            android:background="@drawable/button_shape"/>
+            android:background="@drawable/button_shape"
+            android:text="完成并提交"
+            android:textColor="@color/textColorBlack"
+            android:textSize="20dp" />
         <!--返回条目查看界面-->
         <Button
-            android:text="返回条目查看"
-            android:textSize="20dp"
-            android:textColor="@color/textColorBlack"
+            android:id="@+id/bt_item_edit_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="15dp"
             android:layout_marginBottom="30dp"
-            android:id="@+id/bt_item_edit_view"
-            android:background="@drawable/button_shape"/>
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/button_shape"
+            android:text="返回条目查看"
+            android:textColor="@color/textColorBlack"
+            android:textSize="20dp" />
         <!--添加内部键盘布局-->
-        <include layout="@layout/secure_keyboard"/>
+        <include layout="@layout/secure_keyboard" />
     </LinearLayout>
 </ScrollView>

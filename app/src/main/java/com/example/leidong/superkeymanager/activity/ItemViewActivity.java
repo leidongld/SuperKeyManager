@@ -51,10 +51,6 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
     private Button bt_item_view_items;
     private Switch switch_item_view;
 
-    //对应条目的用户名
-    private String stringUsername;
-    //对应条目的密码
-    private String stringPassword;
     //用户名对应的密文
     private String encryptedUsername;
     //密码对应的密文
@@ -189,15 +185,10 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
                         }
                         //url为空，则进行app登录
                         else {
-                            if (tv_item_view_pkg.length() == 0) {
-                                Intent appListIntent = new Intent(ItemViewActivity.this, AppListActivity.class);
-                                startActivity(appListIntent);
-                            } else {
-                                PackageManager packageManager = getPackageManager();
-                                Intent appIntent = new Intent();
-                                appIntent = packageManager.getLaunchIntentForPackage(tv_item_view_pkg.toString());
-                                startActivity(appIntent);
-                            }
+                            String pkg = tv_item_view_pkg.toString();
+                            PackageManager packageManager = getPackageManager();
+                            Intent it = packageManager.getLaunchIntentForPackage(pkg);
+                            startActivity(it);
                         }
                     }
                 }.start();

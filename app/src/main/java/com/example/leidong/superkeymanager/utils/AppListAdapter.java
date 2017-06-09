@@ -14,7 +14,7 @@ import com.example.leidong.superkeymanager.R;
 import java.util.List;
 
 /**
- * Created by leidong on 2017/1/14.
+ * Created by leidong on 2017/1/14
  */
 public class AppListAdapter extends BaseAdapter {
     private Activity mContext;
@@ -50,7 +50,7 @@ public class AppListAdapter extends BaseAdapter {
         ViewHolder holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.item, null);
+            convertView = mInflater.inflate(R.layout.app_list_item, null);
 
             holder.appName = (TextView) convertView
                     .findViewById(R.id.appName_TextView);
@@ -67,18 +67,16 @@ public class AppListAdapter extends BaseAdapter {
 		/*
 		 * data
 		 */
-
-        holder.appName.setText(mAppDataList.get(position).appName + "");
-        holder.appPackageName.setText(mAppDataList.get(position).appPackageName
-                + "");
+        holder.appName.setText(mAppDataList.get(position).appName);
+        holder.appPackageName.setText(mAppDataList.get(position).appPackageName);
         holder.appIcon.setImageDrawable(mAppDataList.get(position).appIcon);
 
         return convertView;
     }
 
     static final class ViewHolder {
-        public TextView appName;
-        public TextView appPackageName;
-        public ImageView appIcon;
+        TextView appName;
+        TextView appPackageName;
+        ImageView appIcon;
     }
 }

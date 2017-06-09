@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:layout_margin="16dp">
 
     <ImageView
         android:id="@+id/app_icon"
@@ -19,13 +20,15 @@
             android:id="@+id/appName_TextView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textColor="@drawable/app_text_item_selector" />
+            android:textColor="#000000"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/appPackageName_TextView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textColor="@drawable/app_text_item_selector" />
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"/>
     </LinearLayout>
 
 </LinearLayout>

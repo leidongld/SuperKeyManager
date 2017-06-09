@@ -42,6 +42,7 @@ public class Constants {
     public static final String FIND_ITEM = "find item";
     public static final String ITEM_SP_PARAMS = "item sp params";
     public static final String ITEM_SP_ID = "item sp id";
+    public static final String ITEM_SP_PKG = "item sp pkg";
 
     public static final String item_id = "item_id";
     public static final String item_itemname = "item_itemname";

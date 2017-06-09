@@ -6,24 +6,30 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
+import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
 
 import org.apache.commons.validator.routines.UrlValidator;
 
 /**
- * Created by leidong on 2017/6/8.
+ * Created by leidong on 2017/6/8
  */
 
-public class ItemAddActivity extends AppCompatActivity implements View.OnClickListener {
+public class ItemAddActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener {
+    private static final String TAG = "ItemAddActivity";
+
     private EditText et_itemName, et_username, et_password, et_url, et_pkg, et_note;
     private Button button1, button2;
+    private ImageView pkglist;
 
     private String AESKey;
 
@@ -59,6 +65,8 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
         et_note = (EditText) findViewById(R.id.et_item_edit_note);
         button1 = (Button) findViewById(R.id.bt_item_edit_finish);
         button2 = (Button) findViewById(R.id.bt_item_edit_view);
+        pkglist = (ImageView) findViewById(R.id.pkglist);
+        pkglist.setOnClickListener(this);
     }
 
     /**
@@ -100,6 +108,11 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.pkglist:
+                Intent intent1 = new Intent(ItemAddActivity.this, AppListActivity.class);
+                intent1.putExtra("ClassName", TAG);
+                startActivity(intent1);
+                break;
             default:
                 break;
         }
@@ -107,7 +120,6 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
 
     /**
      * 判断输入是否合法
-     *
      * @param newName
      * @param newUsername
      * @param newPassword
@@ -128,6 +140,9 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
         else if(newUrl.length() > 0 && !isUrlValid(newUrl)){
             return false;
         }
+        else if(newUrl.length() > 0 && newPkg.length() > 0){
+            return false;
+        }
         return true;
     }
 
@@ -140,5 +155,47 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
         String[] schemas = {"http", "https"};
         UrlValidator urlValidator = new UrlValidator(schemas);
         return urlValidator.isValid(newUrl);
+    }
+
+    /**
+     * EditText的触摸触发安全键盘的弹出
+     * @param v
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            et_itemName.setShowSoftInputOnFocus(true);
+            et_username.setShowSoftInputOnFocus(true);
+            et_password.setShowSoftInputOnFocus(true);
+            et_url.setShowSoftInputOnFocus(true);
+            et_pkg.setShowSoftInputOnFocus(true);
+            et_note.setShowSoftInputOnFocus(true);
+            switch (v.getId()) {
+                case R.id.et_item_edit_name:
+                    new InnerKeyboardUtil(this, et_itemName).showKeyBoard();
+                    break;
+                case R.id.et_item_edit_username:
+                    new InnerKeyboardUtil(this, et_username).showKeyBoard();
+                    break;
+                case R.id.et_item_edit_password:
+                    new InnerKeyboardUtil(this, et_password).showKeyBoard();
+                    break;
+                case R.id.et_item_edit_url:
+                    new InnerKeyboardUtil(this, et_url).showKeyBoard();
+                    break;
+                case R.id.et_item_edit_pkg:
+                    new InnerKeyboardUtil(this, et_pkg).showKeyBoard();
+                    break;
+                case R.id.et_item_edit_note:
+                    new InnerKeyboardUtil(this, et_note).showKeyBoard();
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }
+        return false;
     }
 }
