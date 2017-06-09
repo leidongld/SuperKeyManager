@@ -57,9 +57,9 @@ public class MyApplication extends Application {
      */
     private void setDatabase() {
         mHelper = new DaoMaster.DevOpenHelper(this, "items.db", null);
-        //mDaoMaster = new DaoMaster(mHelper.getEncryptedWritableDb("123456"));
-        db = mHelper.getWritableDatabase();
-        mDaoMaster = new DaoMaster(db);
+        mDaoMaster = new DaoMaster(mHelper.getEncryptedWritableDb("123456"));
+        /*db = mHelper.getWritableDatabase();
+        mDaoMaster = new DaoMaster(db);*/
         mDaoSession = mDaoMaster.newSession();
     }
 

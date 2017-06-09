@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by leidong on 2017/1/14.
+ * Created by leidong on 2017/1/14
  */
 public class AppListActivity extends AppCompatActivity{
     private static final String TAG = "AppListActivity";
@@ -40,8 +40,6 @@ public class AppListActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3) {
-
-
                 AppListActivity.this.startActivity(getPackageManager()
                         .getLaunchIntentForPackage(
                                 appDataList.get(arg2).appPackageName));
