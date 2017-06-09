@@ -15,6 +15,8 @@ import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 
+import org.apache.commons.validator.routines.UrlValidator;
+
 /**
  * Created by leidong on 2017/6/8.
  */
@@ -26,7 +28,7 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
     private String AESKey;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_edit);
 
@@ -61,47 +63,37 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
 
     /**
      * 按钮点击事件
+     *
      * @param v
      */
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bt_item_edit_finish:
-                    String itemName0 = et_itemName.getText().toString().trim();
-                    String username0 = et_username.getText().toString().trim();
-                    String password0 = et_password.getText().toString().trim();
-                    String url0 = et_url.getText().toString().trim();
-                    String pkg0 = et_pkg.getText().toString().trim();
-                    String note0 = et_note.getText().toString().trim();
-                    if(isParamsNull(itemName0, username0, password0, url0, pkg0, note0)) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle("警告");
-                        builder.setMessage("请保证输入正确");
-                        builder.setPositiveButton("重新输入", null);
-                        builder.create().show();
-                    }
-                    else {
-                        String itemName = null;
-                        String username = null;
-                        String password = null;
-                        String url = null;
-                        String pkg = null;
-                        String note = null;
-                        try {
-                            itemName = AESClientServerUtil.encrypt(et_itemName.getText().toString().trim(), AESKey);
-                            username = AESClientServerUtil.encrypt(et_username.getText().toString().trim(), AESKey);
-                            password = AESClientServerUtil.encrypt(et_password.getText().toString().trim(), AESKey);
-                            url = AESClientServerUtil.encrypt(et_url.getText().toString().trim(), AESKey);
-                            pkg = AESClientServerUtil.encrypt(et_pkg.getText().toString().trim(), AESKey);
-                            note = AESClientServerUtil.encrypt(et_note.getText().toString().trim(), AESKey);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        GreenDaoUtils.insertItem(itemName, username, password, url, pkg, note);
-                        Intent intent = new Intent(ItemAddActivity.this, ItemsActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                String itemName0 = et_itemName.getText().toString().trim();
+                String username0 = et_username.getText().toString().trim();
+                String password0 = et_password.getText().toString().trim();
+                String url0 = et_url.getText().toString().trim();
+                String pkg0 = et_pkg.getText().toString().trim();
+                String note0 = et_note.getText().toString().trim();
+                if (!isParamsLegal(itemName0, username0, password0, url0, pkg0, note0)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("警告");
+                    builder.setMessage("请保证输入正确");
+                    builder.setPositiveButton("重新输入", null);
+                    builder.create().show();
+                } else {
+                    String itemName = AESClientServerUtil.encrypt(et_itemName.getText().toString().trim(), AESKey);
+                    String username = AESClientServerUtil.encrypt(et_username.getText().toString().trim(), AESKey);
+                    String password = AESClientServerUtil.encrypt(et_password.getText().toString().trim(), AESKey);
+                    String url = AESClientServerUtil.encrypt(et_url.getText().toString().trim(), AESKey);
+                    String pkg = AESClientServerUtil.encrypt(et_pkg.getText().toString().trim(), AESKey);
+                    String note = AESClientServerUtil.encrypt(et_note.getText().toString().trim(), AESKey);
+                    GreenDaoUtils.insertItem(itemName, username, password, url, pkg, note);
+                    Intent intent = new Intent(ItemAddActivity.this, ItemsActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
                 break;
             case R.id.bt_item_edit_view:
                 Intent intent = new Intent(ItemAddActivity.this, ItemsActivity.class);
@@ -115,6 +107,7 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
 
     /**
      * 判断输入是否合法
+     *
      * @param newName
      * @param newUsername
      * @param newPassword
@@ -123,15 +116,29 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
      * @param newNote
      * @return
      */
-    private boolean isParamsNull(String newName, String newUsername, String newPassword, String newUrl, String newPkg, String newNote) {
+    private boolean isParamsLegal(String newName, String newUsername, String newPassword, String newUrl, String newPkg, String newNote) {
         //名称、用户名、密码三项不能为空
         if (newName.length() == 0 || newUsername.length() == 0 || newPassword.length() == 0) {
-            return true;
+            return false;
         }
         //url和包名不能同时为空
         else if (newUrl.length() == 0 && newPkg.length() == 0) {
-            return true;
+            return false;
         }
-        return false;
+        else if(newUrl.length() > 0 && !isUrlValid(newUrl)){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 判断Url是否合法
+     * @param newUrl
+     * @return
+     */
+    private boolean isUrlValid(String newUrl) {
+        String[] schemas = {"http", "https"};
+        UrlValidator urlValidator = new UrlValidator(schemas);
+        return urlValidator.isValid(newUrl);
     }
 }

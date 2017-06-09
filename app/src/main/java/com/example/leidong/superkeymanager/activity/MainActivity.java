@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -66,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //判断sd卡是否存在的标志
         checkSDCard();
 
+        //要求用户打开安全键盘
+        Intent intent = new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS);
+        startActivity(intent);
+
         //这里是RSA公钥保存的位置
         final SharedPreferences sharedPreferences1 = getSharedPreferences(Constants.RSA_SP_PARAMS, Context.MODE_PRIVATE);
         final SharedPreferences sharedPreferences2 = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
@@ -73,22 +78,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String aesKey = sharedPreferences2.getString(Constants.AES_SP_AESKEY, "");
 
         //第一次与服务器建立连接时要求服务器产生RSA密钥对并将密钥对发送到客户端保存
-        if(publicKey.equals("")) {
+        if(aesKey.equals("")) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //请求服务器产生RSA密钥对
-                    generateRSAKeys();
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    obtainPublicKeyFromServer(sharedPreferences1);
                     //AES的本地静态存储作为一个创新点
                     generateAESKey(sharedPreferences2);
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -97,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }).start();
         }
         else{
-            //Toast.makeText(MainActivity.this, "RSA公钥已存储于Android手机", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "RSA公钥已存储于Android手机", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -116,12 +113,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 //得到经过RSA公钥加密的AES密钥，准备传给服务器
                 encryptedAESKey = RSAUtil.encryptByPubKey(aesKey, rsaPublicKey);
+                //传送经过RSA公钥加密的AES密钥密文到服务器进行保存
+                Log.d(TAG, "<<<AESKey>>>" + encryptedAESKey);
+                passEncryptedAESKeyToServer(encryptedAESKey);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        //传送经过RSA公钥加密的AES密钥密文到服务器进行保存
-        passEncryptedAESKeyToServer(encryptedAESKey);
     }
 
     /**
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void passEncryptedAESKeyToServer(final String encryptedAESKey) {
         //已验证
-        //Log.d(TAG, "<<<>>>经过加密的AES密钥：" + encryptedAESKey);
+        Log.d(TAG, "<<<>>>经过加密的AES密钥：" + encryptedAESKey);
         final RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -138,14 +136,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(MainActivity.this, TAG + "  AES密钥已经传送完毕", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, TAG + "  AES密钥已经传送完毕", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "Error");
-                        Toast.makeText(MainActivity.this, TAG + "  Error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, TAG + "  AES密钥已经传送失败", Toast.LENGTH_SHORT).show();
                     }
                 })
         {
@@ -166,12 +163,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void generateAESKey(SharedPreferences sharedPreferences) {
         try {
-            String aesKey = AESClientServerUtil.initKey();
+            String aesKey = AESClientServerUtil.generateKeyString();
+            Log.d(TAG, "<<<>>>generateAESKey()  " + aesKey);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constants.AES_SP_AESKEY, aesKey);
             editor.apply();
             //AES密钥已经正确产生
-            //Log.d(TAG, "<<<>>>AES密钥为：" + aesKey);
+            Log.d(TAG, "<<<>>>AES密钥为：" + aesKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -254,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void saveRSAPublicKeyToSP(String response, SharedPreferences sharedPreferences) {
         //RSA公钥传递正确
-        //Log.d(TAG, "<<<>>>RSA公钥为：" + response);
+        Log.d(TAG, "<<<>>>RSA公钥为：" + response);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constants.RSA_SP_PUBLICKEY, response);
         editor.apply();

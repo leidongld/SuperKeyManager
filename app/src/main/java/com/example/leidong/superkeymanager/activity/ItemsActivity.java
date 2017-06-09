@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,7 +68,6 @@ public class ItemsActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         itemDatas = obtainItemDatas();
-        Log.d(TAG, "<<<>>>\n" + itemDatas.get(0).get(ITEM_NAME));
 
         if (itemDatas.size() >= 0) {
             SimpleAdapter adapter = new SimpleAdapter(this, itemDatas, R.layout.item,
@@ -121,11 +119,7 @@ public class ItemsActivity extends AppCompatActivity {
             HashMap<String, Object> map = new HashMap<>();
             map.put(ITEM_ICON, R.mipmap.app);
             map.put(ITEM_ID, itemList.get(i).getItemId());
-            try {
-                map.put(ITEM_NAME, AESClientServerUtil.decrypt(itemList.get(i).getItemItemname(), AESKey));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            map.put(ITEM_NAME, AESClientServerUtil.decrypt(itemList.get(i).getItemItemname(), AESKey));
             itemDatas.add(map);
         }
         return itemDatas;

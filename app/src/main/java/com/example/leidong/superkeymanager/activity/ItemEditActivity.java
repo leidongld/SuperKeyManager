@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,6 +26,8 @@ import com.example.leidong.superkeymanager.quit.QuitActivities;
 import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
+
+import org.apache.commons.validator.routines.UrlValidator;
 
 /**
  * Created by leidong on 2016/10/24.
@@ -69,7 +70,6 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
         Intent intent = getIntent();
         itemId = intent.getLongExtra(Constants.item_id, 0);
-        Log.d(TAG, "itemId = " + itemId);
 
         SharedPreferences sp1 = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
         AESKey = sp1.getString(Constants.AES_SP_AESKEY, "");
@@ -138,43 +138,33 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
         switch (v.getId()) {
             //对完成修改按钮的监控
             case R.id.bt_item_edit_finish:
-                    String newName0 = et_item_edit_name.getText().toString().trim();
-                    String newUsername0 = et_item_edit_username.getText().toString().trim();
-                    String newPassword0 = et_item_edit_password.getText().toString().trim();
-                    String newUrl0 = et_item_edit_url.getText().toString().trim();
-                    String newPkg0 = et_item_edit_pkg.getText().toString().trim();
-                    String newNote0 = et_item_edit_note.getText().toString().trim();
-                    if (isParamsNull(newName0, newUsername0, newPassword0, newUrl0, newPkg0, newNote0)) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle("警告");
-                        builder.setMessage("输入数据格式不正确");
-                        builder.setPositiveButton("重新输入", null);
-                        builder.create().show();
-                    } else {
-                        String newName = null;
-                        String newUsername = null;
-                        String newPassword = null;
-                        String newUrl = null;
-                        String newPkg = null;
-                        String newNote = null;
-                        try {
-                            newName = AESClientServerUtil.encrypt(et_item_edit_name.getText().toString().trim(), AESKey);
-                            newUsername = AESClientServerUtil.encrypt(et_item_edit_username.getText().toString().trim(), AESKey);
-                            newPassword = AESClientServerUtil.encrypt(et_item_edit_password.getText().toString().trim(), AESKey);
-                            newUrl = AESClientServerUtil.encrypt(et_item_edit_url.getText().toString().trim(), AESKey);
-                            newPkg = AESClientServerUtil.encrypt(et_item_edit_pkg.getText().toString().trim(), AESKey);
-                            newNote = AESClientServerUtil.encrypt(et_item_edit_note.getText().toString().trim(), AESKey);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                String newName0 = et_item_edit_name.getText().toString().trim();
+                String newUsername0 = et_item_edit_username.getText().toString().trim();
+                String newPassword0 = et_item_edit_password.getText().toString().trim();
+                String newUrl0 = et_item_edit_url.getText().toString().trim();
+                String newPkg0 = et_item_edit_pkg.getText().toString().trim();
+                String newNote0 = et_item_edit_note.getText().toString().trim();
+                if (!isParamsLegal(newName0, newUsername0, newPassword0, newUrl0, newPkg0, newNote0)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("警告");
+                    builder.setMessage("输入数据格式不正确");
+                    builder.setPositiveButton("重新输入", null);
+                    builder.create().show();
+                } else {
+                    String newName = AESClientServerUtil.encrypt(et_item_edit_name.getText().toString().trim(), AESKey);
+                    String newUsername = AESClientServerUtil.encrypt(et_item_edit_username.getText().toString().trim(), AESKey);
+                    String newPassword = AESClientServerUtil.encrypt(et_item_edit_password.getText().toString().trim(), AESKey);
+                    String newUrl = AESClientServerUtil.encrypt(et_item_edit_url.getText().toString().trim(), AESKey);
+                    String newPkg = AESClientServerUtil.encrypt(et_item_edit_pkg.getText().toString().trim(), AESKey);
+                    String newNote = AESClientServerUtil.encrypt(et_item_edit_note.getText().toString().trim(), AESKey);
 
-                        GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
+                    GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
 
-                        Toast.makeText(ItemEditActivity.this, "已完成条目的修改", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(ItemEditActivity.this, ItemsActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                    Toast.makeText(ItemEditActivity.this, "已完成条目的修改", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(ItemEditActivity.this, ItemsActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
                 break;
 
             //对返回条目查看按钮的监控
@@ -197,16 +187,30 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
      * @param newNote     备注
      * @return 是否为空的标志
      */
-    private boolean isParamsNull(String newName, String newUsername, String newPassword, String newUrl, String newPkg, String newNote) {
+    private boolean isParamsLegal(String newName, String newUsername, String newPassword, String newUrl, String newPkg, String newNote) {
         //名称、用户名、密码三项不能为空
         if (newName.length() == 0 || newUsername.length() == 0 || newPassword.length() == 0) {
-            return true;
+            return false;
         }
         //url和包名不能同时为空
         else if (newUrl.length() == 0 && newPkg.length() == 0) {
-            return true;
+            return false;
         }
-        return false;
+        else if(newUrl.length() > 0 && !isUrlValid(newUrl)){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 判断Url是否合法
+     * @param newUrl
+     * @return
+     */
+    private boolean isUrlValid(String newUrl) {
+        String[] schemas = {"http", "https"};
+        UrlValidator urlValidator = new UrlValidator(schemas);
+        return urlValidator.isValid(newUrl);
     }
 
     /**

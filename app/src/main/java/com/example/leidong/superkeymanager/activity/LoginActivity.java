@@ -1,5 +1,6 @@
 package com.example.leidong.superkeymanager.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -75,6 +77,112 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //switch控件的处理
         switchChange();
+
+        final SharedPreferences sp = getSharedPreferences(Constants.RSA_SP_PARAMS, Context.MODE_PRIVATE);
+        String publicKey = sp.getString(Constants.RSA_SP_PUBLICKEY, "");
+
+        //第一次与服务器建立连接时要求服务器产生RSA密钥对并将密钥对发送到客户端保存
+        if(publicKey.equals("")) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //请求服务器产生RSA密钥对
+                    generateRSAKeys();
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    obtainPublicKeyFromServer(sp);
+                }
+            }).start();
+        }
+        else{
+            Toast.makeText(LoginActivity.this, "RSA公钥已存储于Android手机", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 从服务器得到RSA公钥
+     * @param sharedPreferences
+     */
+    private void obtainPublicKeyFromServer(final SharedPreferences sharedPreferences) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                Constants.RSA_SERVER_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        saveRSAPublicKeyToSP(response, sharedPreferences);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(LoginActivity.this, "从服务器得到RSA公钥错误", Toast.LENGTH_LONG).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> map = new HashMap<>();
+                map.put(Constants.MYSQL_COMMAND, Constants.GET_RSA_PUBLIC_KEY);
+                return map;
+            }
+        };
+        requestQueue.add(request);
+    }
+
+    /**
+     * 将得到的RSA公钥存储在SHaredPrefereences中
+     * @param response
+     * @param sharedPreferences
+     */
+    private void saveRSAPublicKeyToSP(String response, SharedPreferences sharedPreferences) {
+        //RSA公钥传递正确
+        Log.d(TAG, "<<<>>>RSA公钥为：" + response);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.RSA_SP_PUBLICKEY, response);
+        editor.apply();
+    }
+
+    /**
+     * 第一次与服务器建立连接，要求服务器产生RSA密钥对
+     */
+    private void generateRSAKeys() {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                Constants.RSA_SERVER_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, response);
+                        if(response.equals("true")) {
+                            Toast.makeText(LoginActivity.this, TAG + "  RSA密钥已由服务器产生", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(LoginActivity.this, TAG + "  RSA密钥未能成功生成", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(LoginActivity.this, TAG + "  Error", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Error");
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> map = new HashMap<>();
+                map.put(Constants.MYSQL_COMMAND, Constants.GENERATE_RSA_KEYS);
+                return map;
+            }
+        };
+        requestQueue.add(request);
     }
 
     /**

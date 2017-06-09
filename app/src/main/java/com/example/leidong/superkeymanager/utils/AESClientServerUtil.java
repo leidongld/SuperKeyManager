@@ -1,8 +1,8 @@
 package com.example.leidong.superkeymanager.utils;
 
-import android.util.Base64;
-
-import java.security.Key;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -14,100 +14,187 @@ import javax.crypto.spec.SecretKeySpec;
  */
 
 public class AESClientServerUtil {
-    /**
-     * 密钥算法
-     */
-    public static final String KEY_ALGORITHM = "AES";
-    /**
-     * 加密/解密算法  /工作模式  /填充方式
-     */
-    public static final String CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
+    // /** 算法/模式/填充 **/
+    private static final String CipherMode = "AES/ECB/PKCS5Padding";
+    // private static final String CipherMode = "AES";
 
     /**
-     * 转换密钥
-     * @param key 待密钥
-     * @return 转换后的密钥
-     * @throws Exception 抛出异常
+     * 生成一个AES密钥对象
+     * @return
      */
-    private static Key toKey(byte[] key) throws Exception{
-        //实例化AES密钥材料
-        return new SecretKeySpec(key, KEY_ALGORITHM);
+    public static SecretKeySpec generateKey(){
+        try {
+            KeyGenerator kgen = KeyGenerator.getInstance("AES");
+            kgen.init(128, new SecureRandom());
+            SecretKey secretKey = kgen.generateKey();
+            byte[] enCodeFormat = secretKey.getEncoded();
+            SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+            return key;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
-     * AES解密
-     * @param data 待解密数据
-     * @param key 密钥
-     * @return 明文
-     * @throws Exception 抛出异常
+     * 生成一个AES密钥字符串
+     * @return
      */
-    private static byte[] decrypy(byte[] data, byte[] key) throws Exception{
-        //还原密钥
-        Key k = toKey(key);
-        Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        //初始化，设置解密模式
-        cipher.init(Cipher.DECRYPT_MODE, k);
-        return cipher.doFinal(data);
+    public static String generateKeyString(){
+        return byte2hex(generateKey().getEncoded());
     }
 
     /**
-     * AES解密
-     * @param data 密文
-     * @param aesKey AES密钥
-     * @return 明文
-     * @throws Exception 抛出异常
+     * 加密字节数据
+     * @param content
+     * @param key
+     * @return
      */
-    public static String decrypt(String data, String aesKey) throws Exception{
-        byte[] data_byets = Base64.decode(data, Base64.DEFAULT);
-        byte[] aesKey_bytes = Base64.decode(aesKey, Base64.DEFAULT);
-        byte[] result = decrypy(data_byets, aesKey_bytes);
-        return new String(result);
+    public static byte[] encrypt(byte[] content,byte[] key) {
+        try {
+            Cipher cipher = Cipher.getInstance(CipherMode);
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
+            byte[] result = cipher.doFinal(content);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
-     * AES加密
-     * @param data 待加密数据
-     * @param key 密钥
-     * @return 密文
-     * @throws Exception 抛出异常
+     * 通过byte[]类型的密钥加密String
+     * @param content
+     * @param key
+     * @return 16进制密文字符串
      */
-    private static byte[] encrypy(byte[] data, byte[] key) throws Exception{
-        Key k = toKey(key);
-        Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-        //初始化，设置解密模式
-        cipher.init(Cipher.ENCRYPT_MODE, k);
-        return cipher.doFinal(data);
+    public static String encrypt(String content,byte[] key) {
+        try {
+            Cipher cipher = Cipher.getInstance(CipherMode);
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
+            byte[] data = cipher.doFinal(content.getBytes("UTF-8"));
+            String result = byte2hex(data);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
-     * AES加密
-     * @param data 待加密数据
-     * @param aesKey AES密钥
-     * @return 密文
-     * @throws Exception 抛出异常
+     * 通过String类型的密钥加密String
+     * @param content
+     * @param key
+     * @return 16进制密文字符串
      */
-    public static String encrypt(String data, String aesKey) throws Exception{
-        byte[] data_bytes = data.getBytes();
-        byte[] aesKey_bytes = Base64.decode(aesKey, Base64.DEFAULT);
-        byte[] result = encrypy(data_bytes, aesKey_bytes);
-        return Base64.encodeToString(result, Base64.DEFAULT);
+    public static String encrypt(String content,String key) {
+        byte[] data = null;
+        try {
+            data = content.getBytes("UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        data = encrypt(data, new SecretKeySpec(hex2byte(key), "AES").getEncoded());
+        String result = byte2hex(data);
+        return result;
     }
 
     /**
-     * 生成AES密钥
-     * @return AES密钥
-     * @throws Exception 抛出异常
+     * 通过byte[]类型的密钥解密byte[]
+     * @param content
+     * @param key
+     * @return
      */
-    public static String initKey() throws Exception{
-        //实例化
-        KeyGenerator keyGenerator = KeyGenerator.getInstance(KEY_ALGORITHM);
-        //设置密钥长度
-        keyGenerator.init(256);
-        //生成密钥
-        SecretKey secretKey = keyGenerator.generateKey();
-        //获得密钥的二进制编码形式
-        byte[] aesKey_bytes = secretKey.getEncoded();
-        String aesKey = Base64.encodeToString(aesKey_bytes, Base64.DEFAULT);
-        return aesKey;
+    public static byte[] decrypt(byte[] content,byte[] key) {
+        try {
+            Cipher cipher = Cipher.getInstance(CipherMode);
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"));
+            byte[] result = cipher.doFinal(content);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 通过String类型的密钥 解密String类型的密文
+     * @param content
+     * @param key
+     * @return
+     */
+    public static String decrypt(String content, String key) {
+        byte[] data = null;
+        try {
+            data = hex2byte(content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        data = decrypt(data, hex2byte(key));
+        if (data == null)
+            return null;
+        String result = null;
+        try {
+            result = new String(data, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * 通过byte[]类型的密钥 解密String类型的密文
+     * @param content
+     * @param key
+     * @return
+     */
+    public static String decrypt(String content,byte[] key) {
+        try {
+            Cipher cipher = Cipher.getInstance(CipherMode);
+            cipher.init(Cipher.DECRYPT_MODE,new SecretKeySpec(key, "AES"));
+            byte[] data = cipher.doFinal(hex2byte(content));
+            return new String(data, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 字节数组转成16进制字符串
+     * @param b
+     * @return
+     */
+    public static String byte2hex(byte[] b) { // 一个字节的数，
+        StringBuffer sb = new StringBuffer(b.length * 2);
+        String tmp = "";
+        for (int n = 0; n < b.length; n++) {
+            // 整数转成十六进制表示
+            tmp = (Integer.toHexString(b[n] & 0XFF));
+            if (tmp.length() == 1) {
+                sb.append("0");
+            }
+            sb.append(tmp);
+        }
+        return sb.toString().toUpperCase(); // 转成大写
+    }
+
+    /**
+     * 将hex字符串转换成字节数组
+     * @param inputString
+     * @return
+     */
+    private static byte[] hex2byte(String inputString) {
+        if (inputString == null || inputString.length() < 2) {
+            return new byte[0];
+        }
+        inputString = inputString.toLowerCase();
+        int l = inputString.length() / 2;
+        byte[] result = new byte[l];
+        for (int i = 0; i < l; ++i) {
+            String tmp = inputString.substring(2 * i, 2 * i + 2);
+            result[i] = (byte) (Integer.parseInt(tmp, 16) & 0xFF);
+        }
+        return result;
     }
 }

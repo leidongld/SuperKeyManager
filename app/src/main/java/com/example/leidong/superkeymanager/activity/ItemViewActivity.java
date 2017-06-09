@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,7 +85,6 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
 
         Intent intent = getIntent();
         itemId = intent.getLongExtra(Constants.item_id, 0);
-        Log.d(TAG, "itemId = " + itemId);
 
         SharedPreferences sp1 = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
         AESKey = sp1.getString(Constants.AES_SP_AESKEY, "");
@@ -94,18 +92,15 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
         ItemBean itemBean;
         itemBean = GreenDaoUtils.queryItemBeanById(itemId);
 
-        try {
-            name = AESClientServerUtil.decrypt(itemBean.getItemItemname(), AESKey);
-            encryptedUsername = itemBean.getItemUsername();
-            username = AESClientServerUtil.decrypt(itemBean.getItemUsername(), AESKey);
-            encryptedPassword = itemBean.getItemPassword();
-            password = AESClientServerUtil.decrypt(itemBean.getItemPassword(), AESKey);
-            url = AESClientServerUtil.decrypt(itemBean.getItemUrl(), AESKey);
-            pkg = AESClientServerUtil.decrypt(itemBean.getItemPackagename(), AESKey);
-            note = AESClientServerUtil.decrypt(itemBean.getItemNote(), AESKey);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        name = AESClientServerUtil.decrypt(itemBean.getItemItemname(), AESKey);
+        encryptedUsername = itemBean.getItemUsername();
+        username = AESClientServerUtil.decrypt(itemBean.getItemUsername(), AESKey);
+        encryptedPassword = itemBean.getItemPassword();
+        password = AESClientServerUtil.decrypt(itemBean.getItemPassword(), AESKey);
+        url = AESClientServerUtil.decrypt(itemBean.getItemUrl(), AESKey);
+        pkg = AESClientServerUtil.decrypt(itemBean.getItemPackagename(), AESKey);
+        note = AESClientServerUtil.decrypt(itemBean.getItemNote(), AESKey);
+
         tv_item_view_name.setText(name);
         tv_item_view_username.setText(username);
         tv_item_view_password.setText(password);
@@ -153,6 +148,7 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * 对按钮的点击事件
+     *
      * @param v
      */
     @Override
@@ -230,6 +226,7 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * 产生菜单项
+     *
      * @param menu
      * @return
      */
@@ -241,6 +238,7 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * 菜单点击事件
+     *
      * @param item
      * @return
      */
