@@ -1,121 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent">
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
+<RelativeLayout
     android:layout_height="match_parent"
-    tools:context=".activity.RegisterActivity">
-    <!--注册界面-->
-    <TextView
-        android:text="注册界面"
-        android:textSize="40dp"
-        android:textColor="@color/textColorBlack"
-        android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="注册密码："
-        android:textSize="16sp"
-        android:layout_marginLeft="20dp"
-        android:textColor="@color/textColorBlack"
-        android:layout_gravity="center_vertical"/>
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/masterpassword1"/>
-        <!--输入主密码-->
-        <EditText
+        android:layout_height="match_parent">
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="请输入主密码"
-            android:inputType="textPassword"
-            android:textSize="20dp"
-            android:ems="10"
-            android:id="@+id/et_register_activity_masterpassword" />
-    </TableRow>
+            android:layout_height="match_parent"
+            tools:context=".activity.RegisterActivity">
+            <!--注册界面-->
+            <TextView
+                android:text="注册界面"
+                android:textSize="40dp"
+                android:textColor="@color/textColorBlack"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="确认密码："
-        android:textSize="16sp"
-        android:layout_marginLeft="20dp"
-        android:textColor="@color/textColorBlack"
-        android:layout_gravity="center_vertical"/>
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/masterpassword2"/>
-        <!--再次输入主密码-->
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="请再次输入主密码"
-            android:inputType="textPassword"
-            android:textSize="20dp"
-            android:ems="10"
-            android:id="@+id/et_register_activity_confirm_masterpassword"/>
-    </TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="注册密码："
+                android:textSize="16sp"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/textColorBlack"
+                android:layout_gravity="center_vertical"/>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/masterpassword1"/>
+                <!--输入主密码-->
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="请输入主密码"
+                    android:inputType="textPassword"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:id="@+id/et_register_activity_masterpassword" />
+            </TableRow>
 
-    <!--提交注册按钮-->
-    <Switch
-        android:text="密码不可见"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:id="@+id/switch_register_activity_first" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="确认密码："
+                android:textSize="16sp"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/textColorBlack"
+                android:layout_gravity="center_vertical"/>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="55dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/masterpassword2"/>
+                <!--再次输入主密码-->
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="请再次输入主密码"
+                    android:inputType="textPassword"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:id="@+id/et_register_activity_confirm_masterpassword"/>
+            </TableRow>
 
-    <Button
-        android:text="提交注册"
-        android:textSize="20dp"
-        android:textColor="@color/textColorBlack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"
-        android:id="@+id/bt_register_activity_register"
-        android:background="@drawable/button_shape"/>
-    <!--离开按钮-->
-    <Button
-        android:text="离开"
-        android:textSize="20dp"
-        android:textColor="@color/textColorBlack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:id="@+id/bt_register_activity_exit"
-        android:background="@drawable/button_shape"/>
+            <!--提交注册按钮-->
+            <Switch
+                android:text="密码不可见"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/switch_register_activity_first" />
 
+            <Button
+                android:text="提交注册"
+                android:textSize="20dp"
+                android:textColor="@color/textColorBlack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:id="@+id/bt_register_activity_register"
+                android:background="@drawable/button_shape"/>
+            <!--离开按钮-->
+            <Button
+                android:text="离开"
+                android:textSize="20dp"
+                android:textColor="@color/textColorBlack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/bt_register_activity_exit"
+                android:background="@drawable/button_shape"/>
+        </LinearLayout>
+    </ScrollView>
     <!--是用xml自定义键盘样式使用KeyboardView键盘控件存放定义的键盘布局-->
     <include
         layout="@layout/secure_keyboard"/>
-</LinearLayout>
-</ScrollView>
+</RelativeLayout>

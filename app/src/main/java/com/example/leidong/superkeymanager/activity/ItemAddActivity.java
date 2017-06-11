@@ -6,11 +6,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
@@ -30,6 +36,7 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
     private EditText et_itemName, et_username, et_password, et_url, et_pkg, et_note;
     private Button button1, button2;
     private ImageView pkglist;
+    private Switch mSwitch;
 
     private String AESKey;
 
@@ -41,16 +48,26 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
         initWidgets();
         initActions();
 
+        switchChange();
+
         SharedPreferences sp = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
         AESKey = sp.getString(Constants.AES_SP_AESKEY, "");
+        Toast.makeText(ItemAddActivity.this, AESKey, Toast.LENGTH_LONG).show();
     }
 
     /**
      * 初始化动作
      */
     private void initActions() {
+        et_itemName.setOnTouchListener(this);
+        et_username.setOnTouchListener(this);
+        et_password.setOnTouchListener(this);
+        et_url.setOnTouchListener(this);
+        et_pkg.setOnTouchListener(this);
+        et_note.setOnTouchListener(this);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+
     }
 
     /**
@@ -67,11 +84,40 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
         button2 = (Button) findViewById(R.id.bt_item_edit_view);
         pkglist = (ImageView) findViewById(R.id.pkglist);
         pkglist.setOnClickListener(this);
+        mSwitch = (Switch) findViewById(R.id.switch_item_edit);
+    }
+
+    /**
+     * 生成菜单
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_item_edit_activity, menu);
+        return true;
+    }
+
+    /**
+     * 监控Switch状态的改变
+     */
+    private void switchChange() {
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    et_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    mSwitch.setText("密码可见");
+                } else {
+                    et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    mSwitch.setText("密码不可见");
+                }
+            }
+        });
     }
 
     /**
      * 按钮点击事件
-     *
      * @param v
      */
     @Override

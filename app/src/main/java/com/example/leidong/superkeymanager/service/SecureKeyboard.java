@@ -8,8 +8,8 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.media.AudioManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
 
@@ -45,8 +45,9 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
         sharedPreferences = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
         AESKey = sharedPreferences.getString(Constants.AES_SP_AESKEY, "");
         //取得用户名和密码的密文
-        encryptedUsername = intent.getStringExtra("encrypted_username");
-        encryptedPassword = intent.getStringExtra("encrypted_password");
+        Bundle bundle = intent.getExtras();
+        encryptedUsername = bundle.getString(Constants.ENCRYPTED_USERNAME);
+        encryptedPassword = bundle.getString(Constants.ENCRYPTED_PASSWORD);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -128,8 +129,10 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
                 keyboard1.setShifted(upFlag);
                 keyboardView.invalidateAllKeys();
                 break;
-            case Keyboard.KEYCODE_DONE:
-                ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+            case Keyboard.KEYCODE_CANCEL:
+                /*Log.d(TAG, "<<<<<<<<<<<<<<<<<<<<<<<<");
+                ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));*/
+                keyboardView.onDetachedFromWindow();
                 break;
             case Keyboard.KEYCODE_MODE_CHANGE:
                 if(isWord) {

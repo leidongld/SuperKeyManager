@@ -29,6 +29,9 @@ import com.example.leidong.superkeymanager.service.SecureKeyboard;
 import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by leidong on 2016/10/24.
  * 特定条目查看界面
@@ -161,37 +164,38 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
             //准备登陆按钮的点击
             case R.id.bt_item_view_weblogin:
                 //向SecureKeyboard中传递用户名和密码的密文
-                Intent intent = new Intent(ItemViewActivity.this, SecureKeyboard.class);
-                intent.putExtra("encrypted_username", encryptedUsername);
-                intent.putExtra("encrypted_password", encryptedPassword);
-                startService(intent);
+                final Intent intent = new Intent(ItemViewActivity.this, SecureKeyboard.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.ENCRYPTED_USERNAME, encryptedUsername);
+                bundle.putString(Constants.ENCRYPTED_PASSWORD, encryptedPassword);
+                intent.putExtras(bundle);
 
-                //提示用户切换键盘
-                new Thread() {
-                    public synchronized void run() {
-                        changeKeyboard();
-                        try {
-                            sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                final String pkg = tv_item_view_pkg.getText().toString().trim();
 
+                changeKeyboard();
+
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
                         //url已经过注册，则进行网页登录
                         if (tv_item_view_url.length() > 0) {
                             String url = tv_item_view_url.getText().toString();
                             Uri uri = Uri.parse(url);
                             Intent urlIntent = new Intent(Intent.ACTION_VIEW, uri);
                             startActivity(urlIntent);
+                            startService(intent);
                         }
                         //url为空，则进行app登录
                         else {
-                            String pkg = tv_item_view_pkg.toString();
                             PackageManager packageManager = getPackageManager();
                             Intent it = packageManager.getLaunchIntentForPackage(pkg);
                             startActivity(it);
+                            startService(intent);
                         }
                     }
-                }.start();
+                };
+                Timer timer = new Timer();
+                timer.schedule(timerTask, 3000);
                 break;
 
             //返回条目列表按钮的点击

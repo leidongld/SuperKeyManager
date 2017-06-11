@@ -64,7 +64,9 @@ public class Constants {
     public static final String ADD_AES = "add aes";
     public static final String ENCRYPTED_AESKEY = "encrypted_aeskey";
 
-
+    //EncryptedUsername And EncryptedPassword
+    public static final String ENCRYPTED_USERNAME = "encrypted_username";
+    public static final String ENCRYPTED_PASSWORD = "encrypted_password";
     /**
      * item_id : 1
      */

@@ -213,8 +213,8 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     /**
      * 判断Url是否合法
-     * @param newUrl
-     * @return
+     * @param newUrl 传入的Url
+     * @return 是否合法的标志
      */
     private boolean isUrlValid(String newUrl) {
         String[] schemas = {"http", "https"};
@@ -224,8 +224,8 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     /**
      * 菜单点击操作
-     * @param item
-     * @return
+     * @param item 条目
+     * @return 返回
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -252,9 +252,9 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
     /**
      * EditText的触摸触发安全键盘的弹出
-     * @param v
-     * @param event
-     * @return
+     * @param v 视图
+     * @param event 事件
+     * @return 返回
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
