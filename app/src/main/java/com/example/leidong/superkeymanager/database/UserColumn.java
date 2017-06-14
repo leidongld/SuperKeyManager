@@ -3,7 +3,7 @@ package com.example.leidong.superkeymanager.database;
 import android.provider.BaseColumns;
 
 /**
- * Created by leidong on 2016/10/20.
+ * Created by leidong on 2016/10/20
  */
 
 public class UserColumn implements BaseColumns {

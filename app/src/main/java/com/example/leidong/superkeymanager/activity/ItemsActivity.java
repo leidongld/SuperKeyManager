@@ -13,8 +13,13 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.leidong.superkeymanager.MyApplication;
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.beans.ItemBean;
@@ -27,6 +32,7 @@ import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by leidong on 2016/10/17.
@@ -92,6 +98,8 @@ public class ItemsActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 itemId = (long) itemDatas.get(position).get(ITEM_ID);
                 GreenDaoUtils.deleteItem(itemId);
+                //删除条目
+                deleteItemToServer(itemId);
                 itemDatas = obtainItemDatas();
 
                 if (itemDatas.size() >= 0) {
@@ -99,10 +107,44 @@ public class ItemsActivity extends AppCompatActivity {
                             new String[]{ITEM_ICON, ITEM_ID, ITEM_NAME}, new int[]{R.id.item_icon, R.id.item_id, R.id.item_name});
                     lv_items_activity_items.setAdapter(adapter);
                 }
-                Toast.makeText(ItemsActivity.this, "条目已经删除！", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
+    }
+
+    /**
+     * 删除服务器端的对应条目
+     * @param itemId 条目ID
+     */
+    private void deleteItemToServer(final long itemId) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                Constants.ITEM_SERVER_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> map = new HashMap<>();
+                String encryptedMySQLCommand = AESClientServerUtil.encrypt(Constants.DELETE_ITEM, AESKey);
+                String encryptedItemId = AESClientServerUtil.encrypt(String.valueOf(itemId), AESKey);
+                map.put(Constants.MYSQL_COMMAND, encryptedMySQLCommand);
+                map.put(Constants.item_id, encryptedItemId);
+                return map;
+            }
+        };
+        requestQueue.add(request);
     }
 
     /**

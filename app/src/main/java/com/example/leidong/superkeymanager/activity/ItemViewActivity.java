@@ -21,6 +21,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.beans.ItemBean;
 import com.example.leidong.superkeymanager.constants.Constants;
@@ -28,7 +34,10 @@ import com.example.leidong.superkeymanager.quit.QuitActivities;
 import com.example.leidong.superkeymanager.service.SecureKeyboard;
 import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
+import com.google.gson.Gson;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -66,6 +75,8 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
     private String pkg;
     private String note;
 
+    private String jsonContext = "";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,12 +111,76 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
         pkg = AESClientServerUtil.decrypt(itemBean.getItemPackagename(), AESKey);
         note = AESClientServerUtil.decrypt(itemBean.getItemNote(), AESKey);
 
-        tv_item_view_name.setText(name);
-        tv_item_view_username.setText(username);
-        tv_item_view_password.setText(password);
-        tv_item_view_url.setText(url);
-        tv_item_view_pkg.setText(pkg);
-        tv_item_view_note.setText(note);
+        getItemParamsFromServer(itemId, new VolleyCallback() {
+            @Override
+            public void onSeccess(String encryptedJsonContext) {
+                Gson gson = new Gson();
+                String jsonContext = AESClientServerUtil.decrypt(encryptedJsonContext, AESKey);
+                ItemBean itemBeanFromServer = gson.fromJson(jsonContext, ItemBean.class);
+
+                String tempName = itemBeanFromServer.getItemItemname();
+                String tempUsername = itemBeanFromServer.getItemUsername();
+                String tempPassword = itemBeanFromServer.getItemPassword();
+                String tempUrl = itemBeanFromServer.getItemUrl();
+                String tempPkg = itemBeanFromServer.getItemPackagename();
+                String tempNote = itemBeanFromServer.getItemNote();
+
+                if(tempName.equals(name)
+                        && tempUsername.equals(username)
+                        && tempPassword.equals(password)
+                        && tempUrl.equals(url)
+                        && tempPkg.equals(pkg)
+                        && tempNote.equals(note))
+                {
+                    tv_item_view_name.setText(name);
+                    tv_item_view_username.setText(username);
+                    tv_item_view_password.setText(password);
+                    tv_item_view_url.setText(url);
+                    tv_item_view_pkg.setText(pkg);
+                    tv_item_view_note.setText(note);
+                }
+                else{
+                    Toast.makeText(ItemViewActivity.this, "服务器的条目参数与本地的条目参数不一致", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    /**
+     * 从服务器获取对应条目的全部参数
+     * @param itemId
+     * @return
+     */
+    private void getItemParamsFromServer(final long itemId, final VolleyCallback callback) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                Constants.ITEM_SERVER_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        jsonContext = response;
+                        callback.onSeccess(jsonContext);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ItemViewActivity.this, TAG + "  getItemParamsFromServer  onErrorResponse", Toast.LENGTH_LONG).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> map = new HashMap<>();
+                String encryptedMySQLCommand = AESClientServerUtil.encrypt(Constants.GET_ITEM, AESKey);
+                String encryptedItemId = AESClientServerUtil.encrypt(String.valueOf(itemId), AESKey);
+                map.put(Constants.MYSQL_COMMAND, encryptedMySQLCommand);
+                map.put(Constants.item_id, encryptedItemId);
+                return map;
+            }
+        };
+        requestQueue.add(request);
     }
 
     /**
@@ -271,5 +346,9 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    interface VolleyCallback{
+        void onSeccess(String encryptedJsonContext);
     }
 }

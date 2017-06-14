@@ -45,17 +45,6 @@ public class AppListActivity extends AppCompatActivity{
         // init view
         appListView = (ListView) this.findViewById(R.id.app_ListView);
         appListView.setAdapter(new AppListAdapter(this, appDataList));
-        /*appListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3) {
-                AppListActivity.this.startActivity(getPackageManager()
-                        .getLaunchIntentForPackage(
-                                appDataList.get(arg2).appPackageName));
-
-            }
-        });*/
         appListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {

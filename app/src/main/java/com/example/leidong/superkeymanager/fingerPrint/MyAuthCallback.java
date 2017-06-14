@@ -6,7 +6,7 @@ import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import com.example.leidong.superkeymanager.activity.FingerPrintActivity;
 
 /**
- * Created by leidong on 2016/11/5.
+ * Created by leidong on 2016/11/5
  */
 
 public class MyAuthCallback extends FingerprintManagerCompat.AuthenticationCallback {

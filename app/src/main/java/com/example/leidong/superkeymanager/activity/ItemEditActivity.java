@@ -20,15 +20,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
-
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
 import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
-
 import org.apache.commons.validator.routines.UrlValidator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by leidong on 2016/10/24.
@@ -162,6 +168,9 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
 
                     GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
 
+                    //修改数据库中的对应条目
+                    mofifyItemToServer(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
+
                     Toast.makeText(ItemEditActivity.this, "已完成条目的修改", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(ItemEditActivity.this, ItemsActivity.class);
                     startActivity(intent);
@@ -181,6 +190,54 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
             default:
                 break;
         }
+    }
+
+    /**
+     * 修改数据库中的对应条目
+     * @param itemId 条目ID
+     * @param newName 条目名称
+     * @param newUsername 条目用户名
+     * @param newPassword 条目密码
+     * @param newPkg 条目包名
+     * @param newNote 条目备注
+     */
+    private void mofifyItemToServer(final long itemId, final String newName, final String newUsername, final String newPassword, final String newUrl, final String newPkg, final String newNote) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                Constants.ITEM_SERVER_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equals("true")){
+                            Toast.makeText(ItemEditActivity.this, "对应条目已经修改完毕", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ItemEditActivity.this, TAG + "  mofifyItemToServer  onErrorResponse", Toast.LENGTH_LONG).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> map = new HashMap<>();
+                String encryptedMySQLCommand = AESClientServerUtil.encrypt(Constants.MODIFY_ITEM, AESKey);
+                String encryptedItemId = AESClientServerUtil.encrypt(String.valueOf(itemId), AESKey);
+                map.put(Constants.MYSQL_COMMAND, encryptedMySQLCommand);
+                map.put(Constants.item_id, encryptedItemId);
+                map.put(Constants.item_itemname, newName);
+                map.put(Constants.item_username, newUsername);
+                map.put(Constants.item_password, newPassword);
+                map.put(Constants.item_url, newUrl);
+                map.put(Constants.item_package_name, newPkg);
+                map.put(Constants.item_note, newNote);
+                return map;
+            }
+        };
+        requestQueue.add(request);
     }
 
     /**

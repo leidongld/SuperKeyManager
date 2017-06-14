@@ -17,14 +17,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
-
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
 import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
-
 import org.apache.commons.validator.routines.UrlValidator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by leidong on 2017/6/8
@@ -143,6 +149,8 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
                     String url = AESClientServerUtil.encrypt(et_url.getText().toString().trim(), AESKey);
                     String pkg = AESClientServerUtil.encrypt(et_pkg.getText().toString().trim(), AESKey);
                     String note = AESClientServerUtil.encrypt(et_note.getText().toString().trim(), AESKey);
+                    //将经过AES加密的条目信息传送到服务器保存
+                    AddItemToServer(itemName, username, password, url, pkg, note);
                     GreenDaoUtils.insertItem(itemName, username, password, url, pkg, note);
                     Intent intent = new Intent(ItemAddActivity.this, ItemsActivity.class);
                     startActivity(intent);
@@ -165,14 +173,62 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
+     * 将经过AES加密的条目信息传送到服务器保存
+     * @param itemName AES加密过的条目名
+     * @param username AES加密过的用户名
+     * @param password AES加密过的密码
+     * @param url AES加密过的Url
+     * @param pkg AES加密过的pkg
+     * @param note AES加密过的note
+     */
+    private void AddItemToServer(final String itemName, final String username, final String password, final String url, final String pkg, final String note) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                Constants.ITEM_SERVER_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equals("true")){
+                            Toast.makeText(ItemAddActivity.this, "条目已经成功添加到服务器", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ItemAddActivity.this, TAG + "  " + "AddItemToServer Error", Toast.LENGTH_LONG).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> map = new HashMap<>();
+                String encryptedMySQLCommand = AESClientServerUtil.encrypt(Constants.ADD_ITEM, AESKey);
+                String encryptedItemId = AESClientServerUtil.encrypt(String.valueOf(0), AESKey);
+                map.put(Constants.MYSQL_COMMAND, encryptedMySQLCommand);
+                map.put(Constants.item_id, encryptedItemId);
+                map.put(Constants.item_itemname, itemName);
+                map.put(Constants.item_username, username);
+                map.put(Constants.item_password, password);
+                map.put(Constants.item_url, url);
+                map.put(Constants.item_package_name, pkg);
+                map.put(Constants.item_note, note);
+                return map;
+            }
+        };
+        requestQueue.add(request);
+    }
+
+    /**
      * 判断输入是否合法
-     * @param newName
-     * @param newUsername
-     * @param newPassword
-     * @param newUrl
-     * @param newPkg
-     * @param newNote
-     * @return
+     * @param newName 输入的条目名
+     * @param newUsername 输入的用户名
+     * @param newPassword 输入的密码
+     * @param newUrl 输入的Url
+     * @param newPkg 输入的pkg
+     * @param newNote 输入的note
+     * @return 返回驶入是否合法的标志
      */
     private boolean isParamsLegal(String newName, String newUsername, String newPassword, String newUrl, String newPkg, String newNote) {
         //名称、用户名、密码三项不能为空
