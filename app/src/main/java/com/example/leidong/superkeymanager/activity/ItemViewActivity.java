@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,7 +76,7 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
     private String pkg;
     private String note;
 
-    private String jsonContext = "";
+    private String encryptedJsonContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,27 +104,34 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
         itemBean = GreenDaoUtils.queryItemBeanById(itemId);
 
         name = AESClientServerUtil.decrypt(itemBean.getItemItemname(), AESKey);
-        encryptedUsername = itemBean.getItemUsername();
         username = AESClientServerUtil.decrypt(itemBean.getItemUsername(), AESKey);
-        encryptedPassword = itemBean.getItemPassword();
         password = AESClientServerUtil.decrypt(itemBean.getItemPassword(), AESKey);
         url = AESClientServerUtil.decrypt(itemBean.getItemUrl(), AESKey);
         pkg = AESClientServerUtil.decrypt(itemBean.getItemPackagename(), AESKey);
         note = AESClientServerUtil.decrypt(itemBean.getItemNote(), AESKey);
+        encryptedUsername = itemBean.getItemUsername();
+        encryptedPassword = itemBean.getItemPassword();
 
         getItemParamsFromServer(itemId, new VolleyCallback() {
             @Override
             public void onSeccess(String encryptedJsonContext) {
                 Gson gson = new Gson();
-                String jsonContext = AESClientServerUtil.decrypt(encryptedJsonContext, AESKey);
+                String jsonContext = AESClientServerUtil.decrypt(encryptedJsonContext.substring(4), AESKey);
                 ItemBean itemBeanFromServer = gson.fromJson(jsonContext, ItemBean.class);
 
-                String tempName = itemBeanFromServer.getItemItemname();
-                String tempUsername = itemBeanFromServer.getItemUsername();
-                String tempPassword = itemBeanFromServer.getItemPassword();
-                String tempUrl = itemBeanFromServer.getItemUrl();
-                String tempPkg = itemBeanFromServer.getItemPackagename();
-                String tempNote = itemBeanFromServer.getItemNote();
+                String tempName = itemBeanFromServer.getItemItemname().trim();
+                String tempUsername = itemBeanFromServer.getItemUsername().trim();
+                String tempPassword = itemBeanFromServer.getItemPassword().trim();
+                String tempUrl = itemBeanFromServer.getItemUrl().trim();
+                String tempPkg = itemBeanFromServer.getItemPackagename().trim();
+                String tempNote = itemBeanFromServer.getItemNote().trim();
+
+                Log.d(TAG, "tempName = " + tempName + "#   name = " + name);
+                Log.d(TAG, "tempUsername = " + tempUsername + "#  username = " + username);
+                Log.d(TAG, "tempPassword = " + tempPassword + "#  password = " + password);
+                Log.d(TAG, "tempUrl = " + tempUrl + "#  url = " + url);
+                Log.d(TAG, "tempPkg = " + tempPkg + "#  pkg = " + pkg);
+                Log.d(TAG, "tempNote = " + tempPkg + "#  note = " + note);
 
                 if(tempName.equals(name)
                         && tempUsername.equals(username)
@@ -159,8 +167,9 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        jsonContext = response;
-                        callback.onSeccess(jsonContext);
+                        Log.d(TAG, "response = " + response);
+                        encryptedJsonContext = response;
+                        callback.onSeccess(encryptedJsonContext);
                     }
                 },
                 new Response.ErrorListener() {

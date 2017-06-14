@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,6 +107,13 @@ public class ItemsActivity extends AppCompatActivity {
                     SimpleAdapter adapter = new SimpleAdapter(MyApplication.getContext(), itemDatas, R.layout.item,
                             new String[]{ITEM_ICON, ITEM_ID, ITEM_NAME}, new int[]{R.id.item_icon, R.id.item_id, R.id.item_name});
                     lv_items_activity_items.setAdapter(adapter);
+
+                    //如果items的条目数目为0，则使id从1开始自增
+                    if(itemDatas.size() == 0){
+                        Log.d(TAG, "delete item");
+                        MyApplication.getInstances().getDb().delete("item_bean", null, null);
+                        MyApplication.getInstances().getDb().execSQL("update sqlite_sequence set seq='0' where name='item_bean';");
+                    }
                 }
                 return true;
             }
