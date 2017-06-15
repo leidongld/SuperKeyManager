@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/yellow_background">
+    android:background="@drawable/background">
     <!--条目相关操作界面-->
     <TextView
         android:text="条目相关操作"

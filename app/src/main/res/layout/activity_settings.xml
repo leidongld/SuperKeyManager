@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bluegreen_background">
+    android:background="@drawable/background">
     <TextView
         android:text="设置界面"
         android:textSize="40dp"
