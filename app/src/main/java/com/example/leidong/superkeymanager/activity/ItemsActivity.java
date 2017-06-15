@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -39,14 +39,13 @@ import java.util.Map;
  * Created by leidong on 2016/10/17.
  * 条目列表界面
  */
-public class ItemsActivity extends AppCompatActivity {
+public class ItemsActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "ItemsActivity";
     private static final String ITEM_ICON = "item_icon";
     private static final String ITEM_ID = "item_id";
     private static final String ITEM_NAME = "item_name";
-
-
     private ListView lv_items_activity_items;
+    private ImageView addButton;
     private ItemBeanDao itemBeanDao;
     private ArrayList<HashMap<String, Object>> itemDatas = new ArrayList<>();
 
@@ -67,8 +66,18 @@ public class ItemsActivity extends AppCompatActivity {
         //获取控件
         initWidgets();
 
+        //初始化动作
+        initActions();
+
         SharedPreferences sp = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
         AESKey = sp.getString(Constants.AES_SP_AESKEY, "");
+    }
+
+    /**
+     * 初始化动作
+     */
+    private void initActions() {
+        addButton.setOnClickListener(this);
     }
 
     @Override
@@ -109,11 +118,6 @@ public class ItemsActivity extends AppCompatActivity {
                     lv_items_activity_items.setAdapter(adapter);
 
                     //如果items的条目数目为0，则使id从1开始自增
-                    if(itemDatas.size() == 0){
-                        Log.d(TAG, "delete item");
-                        MyApplication.getInstances().getDb().delete("item_bean", null, null);
-                        MyApplication.getInstances().getDb().execSQL("update sqlite_sequence set seq='0' where name='item_bean';");
-                    }
                 }
                 return true;
             }
@@ -180,6 +184,7 @@ public class ItemsActivity extends AppCompatActivity {
      */
     private void initWidgets() {
         lv_items_activity_items = (ListView) findViewById(R.id.lv_items_activity_items);
+        addButton = (ImageView) findViewById(R.id.add_button);
     }
 
     /**
@@ -196,7 +201,6 @@ public class ItemsActivity extends AppCompatActivity {
 
     /**
      * 菜单点击操作
-     *
      * @param item 菜单条目
      * @return 点击结果
      */
@@ -222,5 +226,21 @@ public class ItemsActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * 控件点击
+     * @param v 视图
+     */
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.add_button:
+                Intent intent = new Intent(ItemsActivity.this, ItemAddActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -48,8 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //离开按钮
     private Button bt_main_activity_exit;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

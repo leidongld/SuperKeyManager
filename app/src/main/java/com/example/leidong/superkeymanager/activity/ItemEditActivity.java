@@ -159,12 +159,12 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
                     builder.setPositiveButton("重新输入", null);
                     builder.create().show();
                 } else {
-                    String newName = AESClientServerUtil.encrypt(et_item_edit_name.getText().toString().trim(), AESKey);
-                    String newUsername = AESClientServerUtil.encrypt(et_item_edit_username.getText().toString().trim(), AESKey);
-                    String newPassword = AESClientServerUtil.encrypt(et_item_edit_password.getText().toString().trim(), AESKey);
-                    String newUrl = AESClientServerUtil.encrypt(et_item_edit_url.getText().toString().trim(), AESKey);
-                    String newPkg = AESClientServerUtil.encrypt(et_item_edit_pkg.getText().toString().trim(), AESKey);
-                    String newNote = AESClientServerUtil.encrypt(et_item_edit_note.getText().toString().trim(), AESKey);
+                    String newName = AESClientServerUtil.encrypt(newName0, AESKey);
+                    String newUsername = AESClientServerUtil.encrypt(newUsername0, AESKey);
+                    String newPassword = AESClientServerUtil.encrypt(newPassword0, AESKey);
+                    String newUrl = AESClientServerUtil.encrypt(newUrl0, AESKey);
+                    String newPkg = AESClientServerUtil.encrypt(newPkg0, AESKey);
+                    String newNote = AESClientServerUtil.encrypt(newNote0, AESKey);
 
                     GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
 
