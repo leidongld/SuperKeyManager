@@ -7,8 +7,9 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Constants {
+
     //localhost地址
-    public static final String LOCAL_HOST = "192.168.3.50:8080";
+    private static final String LOCAL_HOST = "192.168.1.102:8080";
 
     //服务器上的主密码url
     public static final String MASTAER_PASSWORD_SERVER_URL = "http://" + LOCAL_HOST + "/SuperKeyManager/MasterPasswordServlet";
@@ -55,18 +56,23 @@ public class Constants {
     //RSA
     public static final String GENERATE_RSA_KEYS = "generate rsa keys";
     public static final String GET_RSA_PUBLIC_KEY = "get rsa public key";
-    public static final String RSA_SP_PARAMS = "RSAParams";
-    public static final String RSA_SP_PUBLICKEY = "RSAPublicKey";
+    public static final String RSA_PUBLIC_KEY = "RSA_PUBLIC_KEY";
 
     //AES
-    public static final String AES_SP_PARAMS = "AESParams";
-    public static final String AES_SP_AESKEY = "AESKey";
+    public static final String AES_KEY = "AES_KEY";
     public static final String ADD_AES = "add aes";
     public static final String ENCRYPTED_AESKEY = "encrypted_aeskey";
 
     //EncryptedUsername And EncryptedPassword
     public static final String ENCRYPTED_USERNAME = "encrypted_username";
     public static final String ENCRYPTED_PASSWORD = "encrypted_password";
+
+
+    public static final String isHasMasterPassword = "isHasMasterPassword";
+    public static final String isHasFingerprint = "isHasFingerprint";
+    public static final String isHasAESKey = "isHasAESKey";
+    public static final String isHasRSAPublicKey = "isHasRSAPublicKey";
+    public static final String isHasIME = "isHasIME";
 
     /**
      * item_id : 1

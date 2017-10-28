@@ -4,7 +4,7 @@ package com.example.leidong.superkeymanager.utils;
  * Created by leidong on 2017/4/2.
  * 主密码格式的检测
  */
-public class PasswordFormatUtil {
+public class PasswordFormatUtils {
     /**
      * 至少包含大小写字母及数字中的一种
      * @param str 输入的密码字符串

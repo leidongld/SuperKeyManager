@@ -1,8 +1,6 @@
 package com.example.leidong.superkeymanager.service;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -15,7 +13,8 @@ import android.view.inputmethod.InputConnection;
 
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
-import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
+import com.example.leidong.superkeymanager.utils.AESClientServerUtils;
+import com.example.leidong.superkeymanager.utils.UserDefault;
 
 /**
  * Created by leidong on 2016/12/19
@@ -24,7 +23,7 @@ import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
 public class SecureKeyboard extends InputMethodService implements KeyboardView.OnKeyboardActionListener{
     private static final String TAG = "SecureKeyboard";
 
-    private SharedPreferences sharedPreferences;
+//    private SharedPreferences sharedPreferences;
     private String AESKey;
 
     private KeyboardView keyboardView;
@@ -42,8 +41,9 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-        sharedPreferences = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-        AESKey = sharedPreferences.getString(Constants.AES_SP_AESKEY, "");
+//        sharedPreferences = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
+//        AESKey = sharedPreferences.getString(Constants.AES_SP_AESKEY, "");
+        AESKey = UserDefault.getUserDefaultInstance(null).load("AESKey", "");
         //取得用户名和密码的密文
         Bundle bundle = intent.getExtras();
         encryptedUsername = bundle.getString(Constants.ENCRYPTED_USERNAME);
@@ -154,7 +154,7 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
                 String username = "";
                 try {
                     if(AESKey.length() > 0 && encryptedUsername != null) {
-                        username = AESClientServerUtil.decrypt(encryptedUsername, AESKey);
+                        username = AESClientServerUtils.decrypt(encryptedUsername, AESKey);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -165,7 +165,7 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
                 String password = "";
                 try {
                     if(AESKey.length() > 0 && encryptedPassword != null) {
-                        password = AESClientServerUtil.decrypt(encryptedPassword, AESKey);
+                        password = AESClientServerUtils.decrypt(encryptedPassword, AESKey);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

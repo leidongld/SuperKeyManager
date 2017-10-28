@@ -2,7 +2,6 @@ package com.example.leidong.superkeymanager.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,8 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -33,8 +30,9 @@ import com.example.leidong.superkeymanager.beans.ItemBean;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
 import com.example.leidong.superkeymanager.service.SecureKeyboard;
-import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
+import com.example.leidong.superkeymanager.utils.AESClientServerUtils;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
+import com.example.leidong.superkeymanager.utils.UserDefault;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -85,8 +83,8 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
         QuitActivities.getInstance().addActivity(this);
 
         //禁止截屏
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+//        Window win = getWindow();
+//        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         //获取组件
         initWidgets();
@@ -97,18 +95,17 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
         Intent intent = getIntent();
         itemId = intent.getLongExtra(Constants.item_id, 0);
 
-        SharedPreferences sp1 = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-        AESKey = sp1.getString(Constants.AES_SP_AESKEY, "");
+        AESKey = UserDefault.getUserDefaultInstance(null).load(Constants.AES_KEY, "");
 
         ItemBean itemBean;
         itemBean = GreenDaoUtils.queryItemBeanById(itemId);
 
-        name = AESClientServerUtil.decrypt(itemBean.getItemItemname(), AESKey);
-        username = AESClientServerUtil.decrypt(itemBean.getItemUsername(), AESKey);
-        password = AESClientServerUtil.decrypt(itemBean.getItemPassword(), AESKey);
-        url = AESClientServerUtil.decrypt(itemBean.getItemUrl(), AESKey);
-        pkg = AESClientServerUtil.decrypt(itemBean.getItemPackagename(), AESKey);
-        note = AESClientServerUtil.decrypt(itemBean.getItemNote(), AESKey);
+        name = AESClientServerUtils.decrypt(itemBean.getItemItemname(), AESKey);
+        username = AESClientServerUtils.decrypt(itemBean.getItemUsername(), AESKey);
+        password = AESClientServerUtils.decrypt(itemBean.getItemPassword(), AESKey);
+        url = AESClientServerUtils.decrypt(itemBean.getItemUrl(), AESKey);
+        pkg = AESClientServerUtils.decrypt(itemBean.getItemPackagename(), AESKey);
+        note = AESClientServerUtils.decrypt(itemBean.getItemNote(), AESKey);
         encryptedUsername = itemBean.getItemUsername();
         encryptedPassword = itemBean.getItemPassword();
 
@@ -116,7 +113,7 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onSeccess(String encryptedJsonContext) {
                 Gson gson = new Gson();
-                String jsonContext = AESClientServerUtil.decrypt(encryptedJsonContext.substring(4), AESKey);
+                String jsonContext = AESClientServerUtils.decrypt(encryptedJsonContext.substring(4), AESKey);
                 ItemBean itemBeanFromServer = gson.fromJson(jsonContext, ItemBean.class);
 
                 String tempName = itemBeanFromServer.getItemItemname().trim();
@@ -125,13 +122,6 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
                 String tempUrl = itemBeanFromServer.getItemUrl().trim();
                 String tempPkg = itemBeanFromServer.getItemPackagename().trim();
                 String tempNote = itemBeanFromServer.getItemNote().trim();
-
-                Log.d(TAG, "tempName = " + tempName + "#   name = " + name);
-                Log.d(TAG, "tempUsername = " + tempUsername + "#  username = " + username);
-                Log.d(TAG, "tempPassword = " + tempPassword + "#  password = " + password);
-                Log.d(TAG, "tempUrl = " + tempUrl + "#  url = " + url);
-                Log.d(TAG, "tempPkg = " + tempPkg + "#  pkg = " + pkg);
-                Log.d(TAG, "tempNote = " + tempPkg + "#  note = " + note);
 
                 if(tempName.equals(name)
                         && tempUsername.equals(username)
@@ -182,8 +172,8 @@ public class ItemViewActivity extends AppCompatActivity implements View.OnClickL
             @Override
             protected Map<String, String> getParams(){
                 Map<String, String> map = new HashMap<>();
-                String encryptedMySQLCommand = AESClientServerUtil.encrypt(Constants.GET_ITEM, AESKey);
-                String encryptedItemId = AESClientServerUtil.encrypt(String.valueOf(itemId), AESKey);
+                String encryptedMySQLCommand = AESClientServerUtils.encrypt(Constants.GET_ITEM, AESKey);
+                String encryptedItemId = AESClientServerUtils.encrypt(String.valueOf(itemId), AESKey);
                 map.put(Constants.MYSQL_COMMAND, encryptedMySQLCommand);
                 map.put(Constants.item_id, encryptedItemId);
                 return map;

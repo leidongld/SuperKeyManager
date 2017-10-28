@@ -22,7 +22,7 @@ import com.example.leidong.superkeymanager.fingerPrint.CryptoObjectHelper;
 import com.example.leidong.superkeymanager.fingerPrint.MyAuthCallback;
 
 /**
- * Created by leidong on 2016/11/5.
+ * Created by leidong on 2016/11/5
  */
 
 public class FingerPrintActivity extends Activity{

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.leidong.superkeymanager"><!--将该app的权限提升到system级-->
+    package="com.example.leidong.superkeymanager">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -77,11 +77,6 @@
         </activity>
 
         <!--条目相关界面-->
-        <activity
-            android:name=".activity.RelateItemsActivity"
-            android:label="条目相关"
-            android:screenOrientation="portrait">
-        </activity>
 
         <!--查看特定条目界面-->
         <activity android:name=".activity.ItemViewActivity"
@@ -116,6 +111,8 @@
             android:label="选择应用"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity android:name=".activity.TestActivity"/>
 
         <!--安全键盘-->
         <service android:name=".service.SecureKeyboard"

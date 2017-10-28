@@ -41,8 +41,8 @@ public class SplashActivity extends Activity{
         setContentView(R.layout.activity_splash);
 
         //禁止截屏
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+//        Window win = getWindow();
+//        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         //获取组件并初始化
         init();

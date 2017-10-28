@@ -12,16 +12,16 @@ import com.example.leidong.superkeymanager.R;
 import java.util.List;
 
 /**
- * Created by leido on 2016/12/22.
+ * Created by leidong on 2016/12/22.
  */
 
-public class InnerKeyboardUtil implements KeyboardView.OnKeyboardActionListener{
+public class InnerKeyboardUtils implements KeyboardView.OnKeyboardActionListener{
     private EditText editText;//当前需要添加内容的editText
     private KeyboardView keyboardView;//键盘视图
     private Keyboard keyboard1, keyboard2;//普通键盘和符号键盘
     private boolean upFlag = false;//英文字母大小写标志
 
-    public InnerKeyboardUtil(Activity activity, EditText editText){
+    public InnerKeyboardUtils(Activity activity, EditText editText){
         this.editText = editText;
 
         //获取普通键盘和符号键盘

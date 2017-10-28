@@ -2,12 +2,12 @@ package com.example.leidong.superkeymanager;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.leidong.superkeymanager.constants.Constants;
+import com.android.volley.RequestQueue;
 import com.example.leidong.superkeymanager.gen.DaoMaster;
 import com.example.leidong.superkeymanager.gen.DaoSession;
+import com.example.leidong.superkeymanager.utils.UserDefault;
 
 /**
  * Created by leidong on 2017/4/1.
@@ -20,6 +20,7 @@ public class MyApplication extends Application {
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
     public static MyApplication instances;
+    private static RequestQueue mRequestQueue;
 
     @Override
     public void onCreate(){
@@ -30,10 +31,13 @@ public class MyApplication extends Application {
         instances = this;
         setDatabase();
 
-        SharedPreferences sp1 =getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor1 = sp1.edit();
-        editor1.putString(Constants.AES_SP_AESKEY, "");
-        editor1.apply();
+        UserDefault.getUserDefaultInstance(getApplicationContext());
+//        UserDefault.getUserDefaultInstance(null).save();
+//        UserDefault.getUserDefaultInstance(null).save("AESKey", "");
+//        UserDefault.getUserDefaultInstance(null).save("publicKey", "");
+
+        /*HurlStack hurlStack = new HurlStack(null, HttpsUtils.initCertificates(bksFile, password, certificates));
+        mRequestQueue = Volley.newRequestQueue(context, hurlStack);*/
     }
 
     /**

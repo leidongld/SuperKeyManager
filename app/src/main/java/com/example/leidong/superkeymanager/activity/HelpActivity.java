@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.leidong.superkeymanager.R;
@@ -30,8 +29,8 @@ public class HelpActivity extends AppCompatActivity{
         QuitActivities.getInstance().addActivity(this);
 
         //禁止截屏
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+//        Window win = getWindow();
+//        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         //获取组件并初始化
         init();

@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.leidong.superkeymanager"
         minSdkVersion 22
@@ -34,6 +34,7 @@ dependencies {
     })
     compile 'org.greenrobot:greendao:3.0.1'
     //compile 'org.greenrobot:greendao:3.1.1'
+    compile 'com.github.kenumir:MaterialSettings:v.1.2.2'
     compile 'net.zetetic:android-database-sqlcipher:3.5.1'
     compile 'org.greenrobot:greendao-generator:3.0.0'
     compile 'com.google.code.gson:gson:2.2.4'
@@ -44,4 +45,6 @@ dependencies {
     compile files('src/main/libs/commons-validator-1.6.jar')
     compile files('src/main/libs/commons-validator-1.6-javadoc.jar')
     compile files('src/main/libs/commons-validator-1.6-tests.jar')
+    implementation files('libs/okhttp-3.9.0.jar')
+    implementation files('libs/okio-1.13.0.jar')
 }

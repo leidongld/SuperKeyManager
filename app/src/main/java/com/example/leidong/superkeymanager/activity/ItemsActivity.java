@@ -1,15 +1,11 @@
 package com.example.leidong.superkeymanager.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,8 +23,9 @@ import com.example.leidong.superkeymanager.beans.ItemBean;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.gen.ItemBeanDao;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
-import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
+import com.example.leidong.superkeymanager.utils.AESClientServerUtils;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
+import com.example.leidong.superkeymanager.utils.UserDefault;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,8 +56,8 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_items);
 
         //禁止截屏
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+//        Window win = getWindow();
+//        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         QuitActivities.getInstance().addActivity(this);
 
         //获取控件
@@ -69,8 +66,7 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
         //初始化动作
         initActions();
 
-        SharedPreferences sp = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-        AESKey = sp.getString(Constants.AES_SP_AESKEY, "");
+        AESKey = UserDefault.getUserDefaultInstance(null).load(Constants.AES_KEY, "");
     }
 
     /**
@@ -149,8 +145,8 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
             @Override
             protected Map<String, String> getParams(){
                 Map<String, String> map = new HashMap<>();
-                String encryptedMySQLCommand = AESClientServerUtil.encrypt(Constants.DELETE_ITEM, AESKey);
-                String encryptedItemId = AESClientServerUtil.encrypt(String.valueOf(itemId), AESKey);
+                String encryptedMySQLCommand = AESClientServerUtils.encrypt(Constants.DELETE_ITEM, AESKey);
+                String encryptedItemId = AESClientServerUtils.encrypt(String.valueOf(itemId), AESKey);
                 map.put(Constants.MYSQL_COMMAND, encryptedMySQLCommand);
                 map.put(Constants.item_id, encryptedItemId);
                 return map;
@@ -173,7 +169,7 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
             HashMap<String, Object> map = new HashMap<>();
             map.put(ITEM_ICON, R.mipmap.app);
             map.put(ITEM_ID, itemList.get(i).getItemId());
-            map.put(ITEM_NAME, AESClientServerUtil.decrypt(itemList.get(i).getItemItemname(), AESKey));
+            map.put(ITEM_NAME, AESClientServerUtils.decrypt(itemList.get(i).getItemItemname(), AESKey));
             itemDatas.add(map);
         }
         return itemDatas;

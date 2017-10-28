@@ -20,7 +20,7 @@ import javax.crypto.Cipher;
  * Created by leidong on 2016/12/23
  */
 
-public class RSAUtil {
+public class RSAUtils {
     // 数字签名，密钥算法
     private static final String RSA_KEY_ALGORITHM = "RSA";
 

@@ -1,8 +1,6 @@
 package com.example.leidong.superkeymanager.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,14 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,10 +26,13 @@ import com.android.volley.toolbox.Volley;
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
-import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
+import com.example.leidong.superkeymanager.utils.AESClientServerUtils;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
-import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
+import com.example.leidong.superkeymanager.utils.InnerKeyboardUtils;
+import com.example.leidong.superkeymanager.utils.UserDefault;
+
 import org.apache.commons.validator.routines.UrlValidator;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,14 +73,13 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
         switchChange();
 
         //禁止截屏
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+//        Window win = getWindow();
+//        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         Intent intent = getIntent();
         itemId = intent.getLongExtra(Constants.item_id, 0);
 
-        SharedPreferences sp1 = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-        AESKey = sp1.getString(Constants.AES_SP_AESKEY, "");
+        AESKey = UserDefault.getUserDefaultInstance(null).load(Constants.AES_KEY, "");
     }
 
     /**
@@ -159,12 +158,12 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
                     builder.setPositiveButton("重新输入", null);
                     builder.create().show();
                 } else {
-                    String newName = AESClientServerUtil.encrypt(newName0, AESKey);
-                    String newUsername = AESClientServerUtil.encrypt(newUsername0, AESKey);
-                    String newPassword = AESClientServerUtil.encrypt(newPassword0, AESKey);
-                    String newUrl = AESClientServerUtil.encrypt(newUrl0, AESKey);
-                    String newPkg = AESClientServerUtil.encrypt(newPkg0, AESKey);
-                    String newNote = AESClientServerUtil.encrypt(newNote0, AESKey);
+                    String newName = AESClientServerUtils.encrypt(newName0, AESKey);
+                    String newUsername = AESClientServerUtils.encrypt(newUsername0, AESKey);
+                    String newPassword = AESClientServerUtils.encrypt(newPassword0, AESKey);
+                    String newUrl = AESClientServerUtils.encrypt(newUrl0, AESKey);
+                    String newPkg = AESClientServerUtils.encrypt(newPkg0, AESKey);
+                    String newNote = AESClientServerUtils.encrypt(newNote0, AESKey);
 
                     GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
 
@@ -224,8 +223,8 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
             @Override
             protected Map<String, String> getParams(){
                 Map<String, String> map = new HashMap<>();
-                String encryptedMySQLCommand = AESClientServerUtil.encrypt(Constants.MODIFY_ITEM, AESKey);
-                String encryptedItemId = AESClientServerUtil.encrypt(String.valueOf(itemId), AESKey);
+                String encryptedMySQLCommand = AESClientServerUtils.encrypt(Constants.MODIFY_ITEM, AESKey);
+                String encryptedItemId = AESClientServerUtils.encrypt(String.valueOf(itemId), AESKey);
                 map.put(Constants.MYSQL_COMMAND, encryptedMySQLCommand);
                 map.put(Constants.item_id, encryptedItemId);
                 map.put(Constants.item_itemname, newName);
@@ -324,22 +323,22 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
             et_item_edit_note.setShowSoftInputOnFocus(true);
             switch (v.getId()) {
                 case R.id.et_item_edit_name:
-                    new InnerKeyboardUtil(this, et_item_edit_name).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_item_edit_name).showKeyBoard();
                     break;
                 case R.id.et_item_edit_username:
-                    new InnerKeyboardUtil(this, et_item_edit_username).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_item_edit_username).showKeyBoard();
                     break;
                 case R.id.et_item_edit_password:
-                    new InnerKeyboardUtil(this, et_item_edit_password).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_item_edit_password).showKeyBoard();
                     break;
                 case R.id.et_item_edit_url:
-                    new InnerKeyboardUtil(this, et_item_edit_url).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_item_edit_url).showKeyBoard();
                     break;
                 case R.id.et_item_edit_pkg:
-                    new InnerKeyboardUtil(this, et_item_edit_pkg).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_item_edit_pkg).showKeyBoard();
                     break;
                 case R.id.et_item_edit_note:
-                    new InnerKeyboardUtil(this, et_item_edit_note).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_item_edit_note).showKeyBoard();
                     break;
                 default:
                     break;

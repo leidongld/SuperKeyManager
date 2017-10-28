@@ -14,7 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Created by leidong on 2016/11/1
  */
 
-public class AESUtil {
+public class AESUtils {
     private static final String TAG = "AESCrypt";
 
     //AESCrypt-ObjC uses CBC and PKCS7Padding
@@ -31,7 +31,7 @@ public class AESUtil {
     //togglable log option (please turn off in live!)
     public static boolean DEBUG_LOG_ENABLED = false;
 
-    private AESUtil() {
+    private AESUtils() {
     }
 
 

@@ -1,8 +1,7 @@
 package com.example.leidong.superkeymanager.activity;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,10 +25,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
-import com.example.leidong.superkeymanager.utils.AESClientServerUtil;
+import com.example.leidong.superkeymanager.utils.AESClientServerUtils;
 import com.example.leidong.superkeymanager.utils.GreenDaoUtils;
-import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
+import com.example.leidong.superkeymanager.utils.InnerKeyboardUtils;
+import com.example.leidong.superkeymanager.utils.UserDefault;
+
 import org.apache.commons.validator.routines.UrlValidator;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,19 +54,21 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_edit);
 
+        AESKey = UserDefault.getUserDefaultInstance(null).load(Constants.AES_KEY, "");
+
         initWidgets();
         initActions();
 
         switchChange();
 
-        SharedPreferences sp = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-        AESKey = sp.getString(Constants.AES_SP_AESKEY, "");
+
         Toast.makeText(ItemAddActivity.this, AESKey, Toast.LENGTH_LONG).show();
     }
 
     /**
      * 初始化动作
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initActions() {
         et_itemName.setOnTouchListener(this);
         et_username.setOnTouchListener(this);
@@ -143,12 +148,12 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
                     builder.setPositiveButton("重新输入", null);
                     builder.create().show();
                 } else {
-                    String itemName = AESClientServerUtil.encrypt(et_itemName.getText().toString().trim(), AESKey);
-                    String username = AESClientServerUtil.encrypt(et_username.getText().toString().trim(), AESKey);
-                    String password = AESClientServerUtil.encrypt(et_password.getText().toString().trim(), AESKey);
-                    String url = AESClientServerUtil.encrypt(et_url.getText().toString().trim(), AESKey);
-                    String pkg = AESClientServerUtil.encrypt(et_pkg.getText().toString().trim(), AESKey);
-                    String note = AESClientServerUtil.encrypt(et_note.getText().toString().trim(), AESKey);
+                    String itemName = AESClientServerUtils.encrypt(et_itemName.getText().toString().trim(), AESKey);
+                    String username = AESClientServerUtils.encrypt(et_username.getText().toString().trim(), AESKey);
+                    String password = AESClientServerUtils.encrypt(et_password.getText().toString().trim(), AESKey);
+                    String url = AESClientServerUtils.encrypt(et_url.getText().toString().trim(), AESKey);
+                    String pkg = AESClientServerUtils.encrypt(et_pkg.getText().toString().trim(), AESKey);
+                    String note = AESClientServerUtils.encrypt(et_note.getText().toString().trim(), AESKey);
                     //将经过AES加密的条目信息传送到服务器保存
                     AddItemToServer(itemName, username, password, url, pkg, note);
                     GreenDaoUtils.insertItem(itemName, username, password, url, pkg, note);
@@ -204,8 +209,8 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             protected Map<String, String> getParams(){
                 Map<String, String> map = new HashMap<>();
-                String encryptedMySQLCommand = AESClientServerUtil.encrypt(Constants.ADD_ITEM, AESKey);
-                String encryptedItemId = AESClientServerUtil.encrypt(String.valueOf(0), AESKey);
+                String encryptedMySQLCommand = AESClientServerUtils.encrypt(Constants.ADD_ITEM, AESKey);
+                String encryptedItemId = AESClientServerUtils.encrypt(String.valueOf(0), AESKey);
                 map.put(Constants.MYSQL_COMMAND, encryptedMySQLCommand);
                 map.put(Constants.item_id, encryptedItemId);
                 map.put(Constants.item_itemname, itemName);
@@ -276,22 +281,22 @@ public class ItemAddActivity extends AppCompatActivity implements View.OnClickLi
             et_note.setShowSoftInputOnFocus(true);
             switch (v.getId()) {
                 case R.id.et_item_edit_name:
-                    new InnerKeyboardUtil(this, et_itemName).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_itemName).showKeyBoard();
                     break;
                 case R.id.et_item_edit_username:
-                    new InnerKeyboardUtil(this, et_username).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_username).showKeyBoard();
                     break;
                 case R.id.et_item_edit_password:
-                    new InnerKeyboardUtil(this, et_password).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_password).showKeyBoard();
                     break;
                 case R.id.et_item_edit_url:
-                    new InnerKeyboardUtil(this, et_url).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_url).showKeyBoard();
                     break;
                 case R.id.et_item_edit_pkg:
-                    new InnerKeyboardUtil(this, et_pkg).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_pkg).showKeyBoard();
                     break;
                 case R.id.et_item_edit_note:
-                    new InnerKeyboardUtil(this, et_note).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_note).showKeyBoard();
                     break;
                 default:
                     break;

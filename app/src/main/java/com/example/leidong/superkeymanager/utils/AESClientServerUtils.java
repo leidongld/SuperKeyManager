@@ -13,7 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Created by leidong on 2017/5/9
  */
 
-public class AESClientServerUtil {
+public class AESClientServerUtils {
     // /** 算法/模式/填充 **/
     private static final String CipherMode = "AES/ECB/PKCS5Padding";
     // private static final String CipherMode = "AES";
@@ -22,7 +22,7 @@ public class AESClientServerUtil {
      * 生成一个AES密钥对象
      * @return
      */
-    public static SecretKeySpec generateKey(){
+    private static SecretKeySpec generateKey(){
         try {
             KeyGenerator kgen = KeyGenerator.getInstance("AES");
             kgen.init(128, new SecureRandom());

@@ -2,8 +2,7 @@
 <RelativeLayout
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/background">
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -13,15 +12,9 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
             tools:context=".activity.RegisterActivity">
             <!--注册界面-->
-            <TextView
-                android:text="注册界面"
-                android:textSize="40dp"
-                android:textColor="@color/textColorBlack"
-                android:gravity="center_horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -103,8 +96,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                android:id="@+id/bt_register_activity_register"
-                android:background="@drawable/button_shape"/>
+                android:id="@+id/bt_register_activity_register" />
             <!--离开按钮-->
             <Button
                 android:text="离开"
@@ -115,8 +107,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:id="@+id/bt_register_activity_exit"
-                android:background="@drawable/button_shape"/>
+                android:id="@+id/bt_register_activity_exit" />
         </LinearLayout>
     </ScrollView>
     <!--是用xml自定义键盘样式使用KeyboardView键盘控件存放定义的键盘布局-->

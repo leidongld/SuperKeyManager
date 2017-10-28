@@ -1,5 +1,6 @@
 package com.example.leidong.superkeymanager.activity;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -15,8 +16,6 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -35,8 +34,9 @@ import com.example.leidong.superkeymanager.database.UserColumn;
 import com.example.leidong.superkeymanager.database.UserProvider;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
 import com.example.leidong.superkeymanager.utils.BCrypt;
-import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
-import com.example.leidong.superkeymanager.utils.PasswordFormatUtil;
+import com.example.leidong.superkeymanager.utils.InnerKeyboardUtils;
+import com.example.leidong.superkeymanager.utils.PasswordFormatUtils;
+import com.example.leidong.superkeymanager.utils.UserDefault;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,75 +61,26 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     //主密码的长度最短限制
     private static final int KEY_LENGTH = Constants.MIN_MASTER_PASSWORD_LENGTH;
 
-    private Uri mUri;
-    private Cursor mCursor;
-
-    //主密码是否存在于MySQL数据库的标志
-    private boolean isMasterPasswordExsistedInMySQL = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(UserDefault.getUserDefaultInstance(null).load(Constants.isHasMasterPassword, false)){
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
         setContentView(R.layout.activity_register);
         QuitActivities.getInstance().addActivity(this);
 
         //禁止截屏
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+//        Window win = getWindow();
+//        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         //获取组件并初始化
         initView();
 
         //Switch操作
         switchChange();
-
-        /**如果之前注册过，直接登录**/
-        mUri = Uri.parse(UserProvider.USER_URI.toString());
-        mCursor = getContentResolver().query(mUri, UserColumn.MASTERPASSWORD_INFOS, null, null, null);
-        masterPasswordExsistedInMySQL(new VolleyCallback() {
-            @Override
-            public void onSuccess(boolean result) {
-                if(result){
-                    Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    startActivity(loginIntent);
-                    finish();
-                }
-            }
-        });
-    }
-
-    /**
-     * 判断主密码是否已经存于MySQL数据库中
-     * @return 是否已存在的标志
-     */
-    private boolean masterPasswordExsistedInMySQL(final VolleyCallback callback) {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(
-                Request.Method.POST,
-                Constants.MASTAER_PASSWORD_SERVER_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        isMasterPasswordExsistedInMySQL = Boolean.parseBoolean(response);
-                        callback.onSuccess(isMasterPasswordExsistedInMySQL);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(RegisterActivity.this, "Error", Toast.LENGTH_LONG).show();
-                }
-        })
-        {
-            @Override
-            protected Map<String, String> getParams(){
-                Map<String, String> map = new HashMap<>();
-                map.put(Constants.MYSQL_COMMAND, Constants.CHECK_MASTERPASSWORD);
-                return map;
-            }
-        };
-        requestQueue.add(request);
-        return isMasterPasswordExsistedInMySQL;
     }
 
     /**
@@ -156,6 +107,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * 获取组件并初始化
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initView() {
         et_register_activity_masterpassword = (EditText)findViewById(R.id.et_register_activity_masterpassword);
         et_register_activity_confirm_masterpassword = (EditText)findViewById(R.id.et_register_activity_confirm_masterpassword);
@@ -177,13 +129,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         switch(v.getId()){
             //点击提交注册按钮
             case R.id.bt_register_activity_register:
+                UserDefault.getUserDefaultInstance(null).save(Constants.isHasMasterPassword, true);
                 final String masterPasswd = et_register_activity_masterpassword.getText().toString().trim();
                 String conMasterPasswd = et_register_activity_confirm_masterpassword.getText().toString().trim();
                     //两次输入的主密码不相同或长度不够
                     if (!masterPasswd.equals(conMasterPasswd)//两次不相等
                             || masterPasswd.length() < KEY_LENGTH//长度不够，小于8
                             || conMasterPasswd.length() < KEY_LENGTH//长度不够，小于8
-                            || !PasswordFormatUtil.isContainAll(masterPasswd))
+                            || !PasswordFormatUtils.isContainAll(masterPasswd))
                     {
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder.setTitle("提示");
@@ -201,8 +154,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     }
                     //两次输入的主密码相同
                     else {
+                        UserDefault.getUserDefaultInstance(null).setIsHasMasterPassword(true);
                         addMasterPasswordToMySQL(masterPasswd);
-
                         Uri uri = Uri.parse(UserProvider.USER_URI.toString());
                         Cursor cursor = getContentResolver().query(uri, UserColumn.MASTERPASSWORD_INFOS, null, null, null);
                         cursor.moveToFirst();
@@ -256,10 +209,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 Map<String, String> map = new HashMap<>();
                 map.put(Constants.MYSQL_COMMAND, Constants.REGISTER_MASTERPASSWORD);
                 map.put(Constants.master_password_id, "1");
-                /*******************************/
                 //传输的安全隐患
                 map.put(Constants.master_password, masterPasswd);
-                /********************************/
                 return map;
             }
         };
@@ -282,10 +233,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             et_register_activity_confirm_masterpassword.setInputType(InputType.TYPE_NULL);
             switch (v.getId()){
                 case R.id.et_register_activity_masterpassword:
-                    new InnerKeyboardUtil(this, et_register_activity_masterpassword).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_register_activity_masterpassword).showKeyBoard();
                     break;
                 case R.id.et_register_activity_confirm_masterpassword:
-                    new InnerKeyboardUtil(this, et_register_activity_confirm_masterpassword).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_register_activity_confirm_masterpassword).showKeyBoard();
                     break;
                 default:
                     break;
@@ -293,9 +244,5 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return true;
         }
         return false;
-    }
-
-    private interface VolleyCallback{
-        void onSuccess(boolean result);
     }
 }

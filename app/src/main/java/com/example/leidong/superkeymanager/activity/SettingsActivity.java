@@ -2,35 +2,67 @@ package com.example.leidong.superkeymanager.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
+import com.kenumir.materialsettings.MaterialSettings;
+import com.kenumir.materialsettings.items.CheckboxItem;
+import com.kenumir.materialsettings.items.HeaderItem;
+import com.kenumir.materialsettings.items.TextItem;
+import com.kenumir.materialsettings.storage.StorageInterface;
 
 /**
  * Created by leidong on 2016/10/17.
  * 设置界面
  */
-public class SettingsActivity extends AppCompatActivity{
+public class SettingsActivity extends MaterialSettings{
     private static final String TAG = "SettingsActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_settings);
-        QuitActivities.getInstance().addActivity(this);
 
-        //禁止截屏
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        addItem(new HeaderItem(this).setTitle("设置"));
 
-        //获取组件并初始化
-        init();
+        addItem(new CheckboxItem(this, "fingerprint").setTitle("使用指纹锁").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+
+            }
+        }));
+
+        addItem(new TextItem(this, "masterpassword").setTitle("更改主密码").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+                Intent intent = new Intent(SettingsActivity.this, MasterPasswordChangeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }));
+
+        addItem(new TextItem(this, "desc").setTitle("app详情").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+                Intent intent = new Intent(SettingsActivity.this, HelpActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }));
+
+        addItem(new TextItem(this, "database").setTitle("database").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+
+            }
+        }));
+
+    }
+
+    @Override
+    public StorageInterface initStorageInterface() {
+        return null;
     }
 
     /**

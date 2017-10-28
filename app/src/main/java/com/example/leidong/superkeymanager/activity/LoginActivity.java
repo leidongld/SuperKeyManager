@@ -1,6 +1,6 @@
 package com.example.leidong.superkeymanager.activity;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -12,8 +12,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -32,7 +30,8 @@ import com.example.leidong.superkeymanager.database.UserColumn;
 import com.example.leidong.superkeymanager.database.UserProvider;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
 import com.example.leidong.superkeymanager.utils.BCrypt;
-import com.example.leidong.superkeymanager.utils.InnerKeyboardUtil;
+import com.example.leidong.superkeymanager.utils.InnerKeyboardUtils;
+import com.example.leidong.superkeymanager.utils.UserDefault;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,8 +68,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         QuitActivities.getInstance().addActivity(this);
         //禁止截屏
-        Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+//        Window win = getWindow();
+//        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         //获取组件并初始化
         init();
@@ -78,11 +77,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //switch控件的处理
         switchChange();
 
-        final SharedPreferences sp = getSharedPreferences(Constants.RSA_SP_PARAMS, Context.MODE_PRIVATE);
-        String publicKey = sp.getString(Constants.RSA_SP_PUBLICKEY, "");
-
         //第一次与服务器建立连接时要求服务器产生RSA密钥对并将密钥对发送到客户端保存
-        if(publicKey.equals("")) {
+        if(!UserDefault.getUserDefaultInstance(null).load(Constants.isHasRSAPublicKey, false)) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -93,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    obtainPublicKeyFromServer(sp);
+                    obtainPublicKeyFromServer();
                 }
             }).start();
         }
@@ -104,9 +100,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     /**
      * 从服务器得到RSA公钥
-     * @param sharedPreferences
      */
-    private void obtainPublicKeyFromServer(final SharedPreferences sharedPreferences) {
+    private void obtainPublicKeyFromServer() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -114,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        saveRSAPublicKeyToSP(response, sharedPreferences);
+                        saveRSAPublicKeyToSP(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -137,14 +132,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     /**
      * 将得到的RSA公钥存储在SHaredPrefereences中
      * @param response
-     * @param sharedPreferences
      */
-    private void saveRSAPublicKeyToSP(String response, SharedPreferences sharedPreferences) {
+    private void saveRSAPublicKeyToSP(String response) {
         //RSA公钥传递正确
         Log.d(TAG, "<<<>>>RSA公钥为：" + response);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constants.RSA_SP_PUBLICKEY, response);
-        editor.apply();
+        UserDefault.getUserDefaultInstance(null).save(Constants.RSA_PUBLIC_KEY, response);
+        UserDefault.getUserDefaultInstance(null).save(Constants.isHasRSAPublicKey, true);
     }
 
     /**
@@ -207,6 +200,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     /**
      * 获取组件并初始化
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void init() {
         et_login_activity_masterpassword = (EditText)findViewById(R.id.et_login_activity_masterpassword);
         et_login_activity_masterpassword.setOnTouchListener(LoginActivity.this);
@@ -232,6 +226,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 /**获取主密码**/
                 Uri uri = Uri.parse(UserProvider.USER_URI.toString());
                 Cursor cursor = getContentResolver().query(uri, new String[]{UserColumn.MASTERPASSWORD}, null, null, null);
+                assert cursor != null;
                 cursor.moveToFirst();
                 String masterPassword = cursor.getString(cursor.getColumnIndex(UserColumn.MASTERPASSWORD));
                 //拿到程序的当前时间
@@ -260,7 +255,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sp.edit();
                                 editor.putLong("lastError", lastError);
-                                editor.commit();
+                                editor.apply();
                             }
                             else{
                                 et_login_activity_masterpassword.setText("");
@@ -337,7 +332,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             et_login_activity_masterpassword.setShowSoftInputOnFocus(true);
             switch (v.getId()){
                 case R.id.et_login_activity_masterpassword:
-                    new InnerKeyboardUtil(this, et_login_activity_masterpassword).showKeyBoard();
+                    new InnerKeyboardUtils(this, et_login_activity_masterpassword).showKeyBoard();
                     break;
                 default:
                     break;

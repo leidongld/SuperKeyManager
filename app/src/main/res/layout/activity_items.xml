@@ -5,16 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="8dp"
-    android:background="@drawable/background">
+    android:layout_margin="8dp">
     <!--条目界面-->
-    <TextView
-        android:text="条目界面"
-        android:textSize="40dp"
-        android:textColor="@color/textColorBlack"
-        android:gravity="center_horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <!--分隔线-->
     <View

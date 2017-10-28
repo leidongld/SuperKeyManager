@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:layout_height="match_parent">
     <!--条目相关操作界面-->
     <TextView
         android:text="条目相关操作"
@@ -31,8 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:id="@+id/bt_relative_items_activity_change_password"
-        android:background="@drawable/button_shape"/>
+        android:id="@+id/bt_relative_items_activity_change_password" />
     <Button
         android:text="备份条目"
         android:textSize="20dp"
@@ -42,7 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:id="@+id/bt_relative_items_activity_secure"
-        android:background="@drawable/button_shape"/>
+        android:id="@+id/bt_relative_items_activity_secure" />
 
 </LinearLayout>

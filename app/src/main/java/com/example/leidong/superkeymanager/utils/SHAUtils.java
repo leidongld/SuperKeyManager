@@ -8,7 +8,7 @@ import java.security.MessageDigest;
  * 主密码不直接出现在数据库
  */
 
-public class SHAUtil {
+public class SHAUtils {
     private static final String DIGEST_ALGORITHM_NAME = "SHA-512";
 
     public static String shaDigest(String inputStr) throws Exception{

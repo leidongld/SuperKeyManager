@@ -2,8 +2,7 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/background">
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <ScrollView
         android:layout_height="match_parent"
         android:layout_width="match_parent">
@@ -13,17 +12,9 @@
             tools:context=".activity.LoginActivity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="20dp">
             <!--登录界面-->
-            <TextView
-                android:text="登录界面"
-                android:textSize="40dp"
-                android:textColor="@color/textColorBlack"
-                android:gravity="center_horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:id="@+id/textView" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -72,8 +63,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="20dp"
-                android:id="@+id/bt_login_activity_login"
-                android:background="@drawable/button_shape"/>
+                android:id="@+id/bt_login_activity_login" />
             <!--指纹-->
             <Button
                 android:text="指纹"
@@ -83,8 +73,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="20dp"
-                android:id="@+id/bt_login_activity_fingerlogin"
-                android:background="@drawable/button_shape"/>
+                android:id="@+id/bt_login_activity_fingerlogin" />
             <!--离开按钮-->
             <Button
                 android:text="离开"
@@ -94,9 +83,9 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="20dp"
-                android:id="@+id/bt_login_activity_exit"
-                android:background="@drawable/button_shape"/>
+                android:id="@+id/bt_login_activity_exit" />
         </LinearLayout>
+
     </ScrollView>
     <!--添加内部键盘布局-->
     <include layout="@layout/secure_keyboard"/>
