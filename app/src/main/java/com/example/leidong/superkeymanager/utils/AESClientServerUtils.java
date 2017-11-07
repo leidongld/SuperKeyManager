@@ -50,7 +50,7 @@ public class AESClientServerUtils {
      * @param key
      * @return
      */
-    public static byte[] encrypt(byte[] content,byte[] key) {
+    private static byte[] encrypt(byte[] content, byte[] key) {
         try {
             Cipher cipher = Cipher.getInstance(CipherMode);
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
@@ -105,7 +105,7 @@ public class AESClientServerUtils {
      * @param key
      * @return
      */
-    public static byte[] decrypt(byte[] content,byte[] key) {
+    private static byte[] decrypt(byte[] content, byte[] key) {
         try {
             Cipher cipher = Cipher.getInstance(CipherMode);
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"));
@@ -165,9 +165,9 @@ public class AESClientServerUtils {
      * @param b
      * @return
      */
-    public static String byte2hex(byte[] b) { // 一个字节的数，
+    private static String byte2hex(byte[] b) { // 一个字节的数，
         StringBuffer sb = new StringBuffer(b.length * 2);
-        String tmp = "";
+        String tmp;
         for (int n = 0; n < b.length; n++) {
             // 整数转成十六进制表示
             tmp = (Integer.toHexString(b[n] & 0XFF));

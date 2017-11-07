@@ -14,6 +14,7 @@ import android.view.inputmethod.InputConnection;
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.constants.Constants;
 import com.example.leidong.superkeymanager.utils.AESClientServerUtils;
+import com.example.leidong.superkeymanager.utils.RandomKeysUtil;
 import com.example.leidong.superkeymanager.utils.UserDefault;
 
 /**
@@ -27,7 +28,7 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
     private String AESKey;
 
     private KeyboardView keyboardView;
-    //keyboard1为数字和字母键盘、keyboard2位符号键盘
+    //keyboard1为字母键盘、keyboard2为符号数字键盘
     private Keyboard keyboard1, keyboard2;
     private boolean upFlag = false;
 
@@ -41,8 +42,6 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-//        sharedPreferences = getSharedPreferences(Constants.AES_SP_PARAMS, Context.MODE_PRIVATE);
-//        AESKey = sharedPreferences.getString(Constants.AES_SP_AESKEY, "");
         AESKey = UserDefault.getUserDefaultInstance(null).load("AESKey", "");
         //取得用户名和密码的密文
         Bundle bundle = intent.getExtras();
@@ -130,18 +129,18 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
                 keyboardView.invalidateAllKeys();
                 break;
             case Keyboard.KEYCODE_CANCEL:
-                /*Log.d(TAG, "<<<<<<<<<<<<<<<<<<<<<<<<");
-                ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));*/
                 keyboardView.onDetachedFromWindow();
                 break;
             case Keyboard.KEYCODE_MODE_CHANGE:
                 if(isWord) {
                     keyboard2 = new Keyboard(this, R.xml.qwerty2);
+                    RandomKeysUtil.randomSymbolAndNumKeys(keyboard2);
                     keyboardView.setKeyboard(keyboard2);
                     isWord = false;
                 }
                 else{
                     keyboard1 = new Keyboard(this, R.xml.qwerty1);
+                    RandomKeysUtil.randomWordKeys(keyboard1);
                     keyboardView.setKeyboard(keyboard1);
                     isWord = true;
                 }

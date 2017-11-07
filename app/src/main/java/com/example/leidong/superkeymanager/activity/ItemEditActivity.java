@@ -2,6 +2,7 @@ package com.example.leidong.superkeymanager.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
@@ -60,11 +61,15 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
     private long itemId;
     private String AESKey;
 
+    private FingerprintManagerCompat fingerprintManagerCompat;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_edit);
         QuitActivities.getInstance().addActivity(this);
+
+        fingerprintManagerCompat = FingerprintManagerCompat.from(this);
 
         //获取组件
         initWidgets();
@@ -145,36 +150,38 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
         switch (v.getId()) {
             //对完成修改按钮的监控
             case R.id.bt_item_edit_finish:
-                String newName0 = et_item_edit_name.getText().toString().trim();
-                String newUsername0 = et_item_edit_username.getText().toString().trim();
-                String newPassword0 = et_item_edit_password.getText().toString().trim();
-                String newUrl0 = et_item_edit_url.getText().toString().trim();
-                String newPkg0 = et_item_edit_pkg.getText().toString().trim();
-                String newNote0 = et_item_edit_note.getText().toString().trim();
-                if (!isParamsLegal(newName0, newUsername0, newPassword0, newUrl0, newPkg0, newNote0)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("警告");
-                    builder.setMessage("输入数据格式不正确");
-                    builder.setPositiveButton("重新输入", null);
-                    builder.create().show();
-                } else {
-                    String newName = AESClientServerUtils.encrypt(newName0, AESKey);
-                    String newUsername = AESClientServerUtils.encrypt(newUsername0, AESKey);
-                    String newPassword = AESClientServerUtils.encrypt(newPassword0, AESKey);
-                    String newUrl = AESClientServerUtils.encrypt(newUrl0, AESKey);
-                    String newPkg = AESClientServerUtils.encrypt(newPkg0, AESKey);
-                    String newNote = AESClientServerUtils.encrypt(newNote0, AESKey);
-
-                    GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
-
-                    //修改数据库中的对应条目
-                    mofifyItemToServer(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
-
-                    Toast.makeText(ItemEditActivity.this, "已完成条目的修改", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(ItemEditActivity.this, ItemsActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+                Toast.makeText(ItemEditActivity.this, "请进行指纹认证", Toast.LENGTH_LONG).show();
+//                fingerprintManagerCompat.authenticate(null, 0, null, new FingerCallback(), null);
+//                String newName0 = et_item_edit_name.getText().toString().trim();
+//                String newUsername0 = et_item_edit_username.getText().toString().trim();
+//                String newPassword0 = et_item_edit_password.getText().toString().trim();
+//                String newUrl0 = et_item_edit_url.getText().toString().trim();
+//                String newPkg0 = et_item_edit_pkg.getText().toString().trim();
+//                String newNote0 = et_item_edit_note.getText().toString().trim();
+//                if (!isParamsLegal(newName0, newUsername0, newPassword0, newUrl0, newPkg0, newNote0)) {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                    builder.setTitle("警告");
+//                    builder.setMessage("输入数据格式不正确");
+//                    builder.setPositiveButton("重新输入", null);
+//                    builder.create().show();
+//                } else {
+//                    String newName = AESClientServerUtils.encrypt(newName0, AESKey);
+//                    String newUsername = AESClientServerUtils.encrypt(newUsername0, AESKey);
+//                    String newPassword = AESClientServerUtils.encrypt(newPassword0, AESKey);
+//                    String newUrl = AESClientServerUtils.encrypt(newUrl0, AESKey);
+//                    String newPkg = AESClientServerUtils.encrypt(newPkg0, AESKey);
+//                    String newNote = AESClientServerUtils.encrypt(newNote0, AESKey);
+//
+//                    GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
+//
+//                    //修改数据库中的对应条目
+//                    mofifyItemToServer(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
+//
+//                    Toast.makeText(ItemEditActivity.this, "已完成条目的修改", Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(ItemEditActivity.this, ItemsActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                }
                 break;
             //对返回条目查看按钮的监控
             case R.id.bt_item_edit_view:
@@ -346,6 +353,61 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
             return true;
         }
         return false;
+    }
+
+    private class FingerCallback extends FingerprintManagerCompat.AuthenticationCallback {
+        @Override
+        public void onAuthenticationError(int errMsgId, CharSequence errString) {
+            Toast.makeText(ItemEditActivity.this, "指纹认证错误了", Toast.LENGTH_LONG).show();
+        }
+
+        // 当指纹验证失败的时候会回调此函数，失败之后允许多次尝试，失败次数过多会停止响应一段时间然后再停止sensor的工作
+        @Override
+        public void onAuthenticationFailed() {
+            Toast.makeText(ItemEditActivity.this, "指纹认证失败了", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
+
+        }
+
+        // 当验证的指纹成功时会回调此函数，然后不再监听指纹sensor
+        @Override
+        public void onAuthenticationSucceeded(FingerprintManagerCompat.AuthenticationResult
+                                                      result) {
+            fingerprintManagerCompat.authenticate(null, 0, null, new FingerCallback(), null);
+            String newName0 = et_item_edit_name.getText().toString().trim();
+            String newUsername0 = et_item_edit_username.getText().toString().trim();
+            String newPassword0 = et_item_edit_password.getText().toString().trim();
+            String newUrl0 = et_item_edit_url.getText().toString().trim();
+            String newPkg0 = et_item_edit_pkg.getText().toString().trim();
+            String newNote0 = et_item_edit_note.getText().toString().trim();
+            if (!isParamsLegal(newName0, newUsername0, newPassword0, newUrl0, newPkg0, newNote0)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                builder.setTitle("警告");
+                builder.setMessage("输入数据格式不正确");
+                builder.setPositiveButton("重新输入", null);
+                builder.create().show();
+            } else {
+                String newName = AESClientServerUtils.encrypt(newName0, AESKey);
+                String newUsername = AESClientServerUtils.encrypt(newUsername0, AESKey);
+                String newPassword = AESClientServerUtils.encrypt(newPassword0, AESKey);
+                String newUrl = AESClientServerUtils.encrypt(newUrl0, AESKey);
+                String newPkg = AESClientServerUtils.encrypt(newPkg0, AESKey);
+                String newNote = AESClientServerUtils.encrypt(newNote0, AESKey);
+
+                GreenDaoUtils.updateItem(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
+
+                //修改数据库中的对应条目
+                mofifyItemToServer(itemId, newName, newUsername, newPassword, newUrl, newPkg, newNote);
+
+                Toast.makeText(ItemEditActivity.this, "已完成条目的修改", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(ItemEditActivity.this, ItemsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
     }
 }
 

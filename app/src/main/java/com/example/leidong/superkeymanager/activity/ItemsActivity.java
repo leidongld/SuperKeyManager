@@ -2,6 +2,7 @@ package com.example.leidong.superkeymanager.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -50,6 +52,9 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
 
     private String AESKey;
 
+    private FingerprintManagerCompat fingerprintManagerCompat;
+    private int pos = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +64,8 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
 //        Window win = getWindow();
 //        win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         QuitActivities.getInstance().addActivity(this);
+
+        fingerprintManagerCompat = FingerprintManagerCompat.from(this);
 
         //获取控件
         initWidgets();
@@ -91,10 +98,13 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
         lv_items_activity_items.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                itemId = (long) itemDatas.get(position).get(ITEM_ID);
-                Intent intent = new Intent(ItemsActivity.this, ItemViewActivity.class);
-                intent.putExtra(Constants.item_id, itemId);
-                startActivity(intent);
+                Toast.makeText(ItemsActivity.this, "请进行指纹认证", Toast.LENGTH_LONG).show();
+                fingerprintManagerCompat.authenticate(null, 0, null, new FingerCallback(), null);
+                pos = position;
+//                itemId = (long) itemDatas.get(position).get(ITEM_ID);
+//                Intent intent = new Intent(ItemsActivity.this, ItemViewActivity.class);
+//                intent.putExtra(Constants.item_id, itemId);
+//                startActivity(intent);
             }
         });
 
@@ -237,6 +247,34 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
                 break;
             default:
                 break;
+        }
+    }
+
+    private class FingerCallback extends FingerprintManagerCompat.AuthenticationCallback {
+        @Override
+        public void onAuthenticationError(int errMsgId, CharSequence errString) {
+            Toast.makeText(ItemsActivity.this, "指纹认证错误了", Toast.LENGTH_LONG).show();
+        }
+
+        // 当指纹验证失败的时候会回调此函数，失败之后允许多次尝试，失败次数过多会停止响应一段时间然后再停止sensor的工作
+        @Override
+        public void onAuthenticationFailed() {
+            Toast.makeText(ItemsActivity.this, "指纹认证失败了", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
+
+        }
+
+        // 当验证的指纹成功时会回调此函数，然后不再监听指纹sensor
+        @Override
+        public void onAuthenticationSucceeded(FingerprintManagerCompat.AuthenticationResult
+                                                      result) {
+            itemId = (long) itemDatas.get(pos).get(ITEM_ID);
+                Intent intent = new Intent(ItemsActivity.this, ItemViewActivity.class);
+                intent.putExtra(Constants.item_id, itemId);
+                startActivity(intent);
         }
     }
 }

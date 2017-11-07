@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 
 /**
- * Created by leidong on 2017/5/2.
+ * Created by leidong on 2017/5/2
  */
 
 public class BCrypt {
@@ -553,8 +553,8 @@ public class BCrypt {
      * @param cdata         the plaintext to encrypt
      * @return	an array containing the binary hashed password
      */
-    public byte[] crypt_raw(byte password[], byte salt[], int log_rounds,
-                            int cdata[]) {
+    private byte[] crypt_raw(byte password[], byte salt[], int log_rounds,
+                             int cdata[]) {
         int rounds, i, j;
         int clen = cdata.length;
         byte ret[];
@@ -629,7 +629,7 @@ public class BCrypt {
 
         B = new BCrypt();
         hashed = B.crypt_raw(passwordb, saltb, rounds,
-                (int[])bf_crypt_ciphertext.clone());
+                bf_crypt_ciphertext.clone());
 
         rs.append("$2");
         if (minor >= 'a')
@@ -657,7 +657,7 @@ public class BCrypt {
      * @param random		an instance of SecureRandom to use
      * @return	an encoded salt value
      */
-    public static String gensalt(int log_rounds, SecureRandom random) {
+    private static String gensalt(int log_rounds, SecureRandom random) {
         StringBuffer rs = new StringBuffer();
         byte rnd[] = new byte[BCRYPT_SALT_LEN];
 
@@ -683,7 +683,7 @@ public class BCrypt {
      * 2**log_rounds.
      * @return	an encoded salt value
      */
-    public static String gensalt(int log_rounds) {
+    private static String gensalt(int log_rounds) {
         return gensalt(log_rounds, new SecureRandom());
     }
 

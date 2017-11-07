@@ -21,7 +21,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -37,7 +36,6 @@ import com.example.leidong.superkeymanager.utils.BCrypt;
 import com.example.leidong.superkeymanager.utils.InnerKeyboardUtils;
 import com.example.leidong.superkeymanager.utils.PasswordFormatUtils;
 import com.example.leidong.superkeymanager.utils.UserDefault;
-
 import java.util.HashMap;
 import java.util.Map;
 

@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.example.leidong.superkeymanager.R;
 import com.example.leidong.superkeymanager.quit.QuitActivities;
+import com.example.leidong.superkeymanager.utils.UserDefault;
 import com.kenumir.materialsettings.MaterialSettings;
 import com.kenumir.materialsettings.items.CheckboxItem;
 import com.kenumir.materialsettings.items.HeaderItem;
@@ -24,12 +25,15 @@ public class SettingsActivity extends MaterialSettings{
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("设置");
+
         addItem(new HeaderItem(this).setTitle("设置"));
 
         addItem(new CheckboxItem(this, "fingerprint").setTitle("使用指纹锁").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
-
+                UserDefault.getUserDefaultInstance(null).setIsHasFingerprint(b);
             }
         }));
 
@@ -42,19 +46,19 @@ public class SettingsActivity extends MaterialSettings{
             }
         }));
 
+        addItem(new TextItem(this, "database").setTitle("数据库导出").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+
+            }
+        }));
+
         addItem(new TextItem(this, "desc").setTitle("app详情").setOnclick(new TextItem.OnClickListener() {
             @Override
             public void onClick(TextItem textItem) {
                 Intent intent = new Intent(SettingsActivity.this, HelpActivity.class);
                 startActivity(intent);
                 finish();
-            }
-        }));
-
-        addItem(new TextItem(this, "database").setTitle("database").setOnclick(new TextItem.OnClickListener() {
-            @Override
-            public void onClick(TextItem textItem) {
-
             }
         }));
 

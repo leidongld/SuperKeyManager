@@ -7,7 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import com.android.volley.RequestQueue;
 import com.example.leidong.superkeymanager.gen.DaoMaster;
 import com.example.leidong.superkeymanager.gen.DaoSession;
+import com.example.leidong.superkeymanager.utils.RandomKeysUtil;
 import com.example.leidong.superkeymanager.utils.UserDefault;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by leidong on 2017/4/1.
@@ -21,6 +25,7 @@ public class MyApplication extends Application {
     private DaoSession mDaoSession;
     public static MyApplication instances;
     private static RequestQueue mRequestQueue;
+    private static HashMap<Integer, ArrayList<Integer>> zoneParams;
 
     @Override
     public void onCreate(){
@@ -32,9 +37,8 @@ public class MyApplication extends Application {
         setDatabase();
 
         UserDefault.getUserDefaultInstance(getApplicationContext());
-//        UserDefault.getUserDefaultInstance(null).save();
-//        UserDefault.getUserDefaultInstance(null).save("AESKey", "");
-//        UserDefault.getUserDefaultInstance(null).save("publicKey", "");
+
+        zoneParams = new HashMap<>();
 
         /*HurlStack hurlStack = new HurlStack(null, HttpsUtils.initCertificates(bksFile, password, certificates));
         mRequestQueue = Volley.newRequestQueue(context, hurlStack);*/
@@ -81,5 +85,16 @@ public class MyApplication extends Application {
      */
     public SQLiteDatabase getDb() {
         return db;
+    }
+
+    /**
+     * 得到单元域参数
+     * @return
+     */
+    public static HashMap<Integer, ArrayList<Integer>> getZoneParams(){
+        if(zoneParams.size() == 0){
+            RandomKeysUtil.loadZoneParams(zoneParams);
+        }
+        return zoneParams;
     }
 }

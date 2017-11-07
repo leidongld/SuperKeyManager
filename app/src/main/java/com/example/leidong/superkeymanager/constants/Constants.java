@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class Constants {
 
     //localhost地址
-    private static final String LOCAL_HOST = "192.168.1.102:8080";
+    private static final String LOCAL_HOST = "192.168.1.101:8080";
 
     //服务器上的主密码url
     public static final String MASTAER_PASSWORD_SERVER_URL = "http://" + LOCAL_HOST + "/SuperKeyManager/MasterPasswordServlet";

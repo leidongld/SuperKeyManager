@@ -12,7 +12,7 @@ import com.example.leidong.superkeymanager.R;
 import java.util.List;
 
 /**
- * Created by leidong on 2016/12/22.
+ * Created by leidong on 2016/12/22
  */
 
 public class InnerKeyboardUtils implements KeyboardView.OnKeyboardActionListener{
@@ -20,9 +20,11 @@ public class InnerKeyboardUtils implements KeyboardView.OnKeyboardActionListener
     private KeyboardView keyboardView;//键盘视图
     private Keyboard keyboard1, keyboard2;//普通键盘和符号键盘
     private boolean upFlag = false;//英文字母大小写标志
+    private Activity activity;
 
     public InnerKeyboardUtils(Activity activity, EditText editText){
         this.editText = editText;
+        this.activity = activity;
 
         //获取普通键盘和符号键盘
         keyboard1 = new Keyboard(activity.getApplicationContext(), R.xml.qwerty);
@@ -30,6 +32,7 @@ public class InnerKeyboardUtils implements KeyboardView.OnKeyboardActionListener
         keyboardView = (KeyboardView)activity.findViewById(R.id.keyboard);
 
         //填充输入法布局
+        RandomKeysUtil.randomWordKeys(keyboard1);
         keyboardView.setKeyboard(keyboard1);//普通键盘优先显示
         keyboardView.setEnabled(true);
         keyboardView.setPreviewEnabled(true);
@@ -122,9 +125,13 @@ public class InnerKeyboardUtils implements KeyboardView.OnKeyboardActionListener
         }else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE){//数字和英文键盘切换
             if(isSymbol){//当前为符号键盘
                 isSymbol = false;
+                keyboard1 = new Keyboard(activity.getApplicationContext(), R.xml.qwerty);
+                RandomKeysUtil.randomWordKeys(keyboard1);
                 keyboardView.setKeyboard(keyboard1);// 设置为字母键盘
             }else{
                 isSymbol = true;
+                keyboard2 = new Keyboard(activity.getApplicationContext(), R.xml.qwerty2);
+                RandomKeysUtil.randomSymbolAndNumKeys(keyboard2);
                 keyboardView.setKeyboard(keyboard2);//设置为符号键盘
             }
         }else if(primaryCode == 57419){  //go left

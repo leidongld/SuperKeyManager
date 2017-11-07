@@ -6,6 +6,18 @@
     android:verticalGap="0px"
     android:keyHeight="50dp">
     <Row>
+        <Key android:codes="49" android:keyLabel="1" android:keyEdgeFlags="left"/>
+        <Key android:codes="50" android:keyLabel="2"/>
+        <Key android:codes="51" android:keyLabel="3"/>
+        <Key android:codes="52" android:keyLabel="4"/>
+        <Key android:codes="53" android:keyLabel="5"/>
+        <Key android:codes="54" android:keyLabel="6"/>
+        <Key android:codes="55" android:keyLabel="7"/>
+        <Key android:codes="56" android:keyLabel="8"/>
+        <Key android:codes="57" android:keyLabel="9"/>
+        <Key android:codes="48" android:keyLabel="0" android:keyEdgeFlags="right"/>
+    </Row>
+    <Row>
         <Key android:codes="64" android:keyLabel="\@" android:keyEdgeFlags="left"/>
         <Key android:codes="35" android:keyLabel="\#"/>
         <Key android:codes="36" android:keyLabel="$"/>
@@ -60,10 +72,10 @@
     </Row>
 
     <Row  android:rowEdgeFlags="bottom">
-        <Key android:codes="32" android:keyLabel="S P A C E" android:keyWidth="70%p"
-            android:isRepeatable="true"/>
-        <Key android:codes="-5" android:keyLabel="D E L"
+        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" android:keyWidth="70%p"
+            android:isRepeatable="true" android:isSticky="true"/>
+        <Key android:codes="-5" android:keyIcon="@drawable/sym_keyboard_delete"
             android:keyWidth="30%p" android:keyEdgeFlags="right"
-            android:isRepeatable="true"/>
+            android:isRepeatable="true" android:isSticky="true"/>
     </Row>
 </Keyboard>
