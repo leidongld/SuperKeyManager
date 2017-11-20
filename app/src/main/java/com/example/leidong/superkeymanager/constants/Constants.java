@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class Constants {
 
     //localhost地址
-    private static final String LOCAL_HOST = "192.168.1.101:8080";
+    private static final String LOCAL_HOST = "192.168.73.176:8080";
 
     //服务器上的主密码url
     public static final String MASTAER_PASSWORD_SERVER_URL = "http://" + LOCAL_HOST + "/SuperKeyManager/MasterPasswordServlet";
@@ -27,6 +27,7 @@ public class Constants {
     public static final int LOCK_TIME = 60000;
 
     //Volley对masterpassword的操作
+    public static final String ENCRYPTED_MASTERPASSWORD = "encrypted masterpassword";
     public static final String REGISTER_MASTERPASSWORD = "register masterpassword";
     public static final String GET_MASTERPASSWORD = "get masterpassword";
     public static final String UPDATE_MASTERPASSWORD = "update masterpassword";

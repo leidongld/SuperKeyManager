@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
 
@@ -24,7 +25,6 @@ import com.example.leidong.superkeymanager.utils.UserDefault;
 public class SecureKeyboard extends InputMethodService implements KeyboardView.OnKeyboardActionListener{
     private static final String TAG = "SecureKeyboard";
 
-//    private SharedPreferences sharedPreferences;
     private String AESKey;
 
     private KeyboardView keyboardView;
@@ -42,9 +42,11 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-        AESKey = UserDefault.getUserDefaultInstance(null).load("AESKey", "");
+        AESKey = UserDefault.getUserDefaultInstance(null).load(Constants.AES_KEY, "");
+        Log.d(TAG, ">>>>>>" + AESKey);
         //取得用户名和密码的密文
         Bundle bundle = intent.getExtras();
+        assert bundle != null;
         encryptedUsername = bundle.getString(Constants.ENCRYPTED_USERNAME);
         encryptedPassword = bundle.getString(Constants.ENCRYPTED_PASSWORD);
         return super.onStartCommand(intent, flags, startId);
@@ -154,25 +156,25 @@ public class SecureKeyboard extends InputMethodService implements KeyboardView.O
                 try {
                     if(AESKey.length() > 0 && encryptedUsername != null) {
                         username = AESClientServerUtils.decrypt(encryptedUsername, AESKey);
+                        ic.setComposingText(username, 30);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ic.setComposingText(username, 30);
                 break;
             case 1001://使用安全键盘填入密码
                 String password = "";
                 try {
                     if(AESKey.length() > 0 && encryptedPassword != null) {
                         password = AESClientServerUtils.decrypt(encryptedPassword, AESKey);
+                        ic.setComposingText(password, 30);
+                        ic.finishComposingText();
+                        encryptedPassword = null;
+                        encryptedUsername = null;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ic.setComposingText(password, 30);
-                ic.finishComposingText();
-                encryptedPassword = null;
-                encryptedUsername = null;
                 break;
             default:
                 char code = (char)primaryCode;

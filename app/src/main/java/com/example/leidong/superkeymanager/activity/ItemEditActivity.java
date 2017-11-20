@@ -1,5 +1,6 @@
 package com.example.leidong.superkeymanager.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
@@ -90,6 +91,7 @@ public class ItemEditActivity extends AppCompatActivity implements View.OnTouchL
     /**
      * 获取组件
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initWidgets() {
         et_item_edit_name = (EditText) findViewById(R.id.et_item_edit_name);
         et_item_edit_username = (EditText) findViewById(R.id.et_item_edit_username);

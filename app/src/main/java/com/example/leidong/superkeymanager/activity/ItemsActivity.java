@@ -98,13 +98,17 @@ public class ItemsActivity extends AppCompatActivity implements View.OnClickList
         lv_items_activity_items.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(ItemsActivity.this, "请进行指纹认证", Toast.LENGTH_LONG).show();
-                fingerprintManagerCompat.authenticate(null, 0, null, new FingerCallback(), null);
-                pos = position;
-//                itemId = (long) itemDatas.get(position).get(ITEM_ID);
-//                Intent intent = new Intent(ItemsActivity.this, ItemViewActivity.class);
-//                intent.putExtra(Constants.item_id, itemId);
-//                startActivity(intent);
+                if(UserDefault.getUserDefaultInstance(null).isHasFingerprint()) {
+                    Toast.makeText(ItemsActivity.this, "请进行指纹认证", Toast.LENGTH_LONG).show();
+                    fingerprintManagerCompat.authenticate(null, 0, null, new FingerCallback(), null);
+                    pos = position;
+                }
+                else {
+                itemId = (long) itemDatas.get(position).get(ITEM_ID);
+                Intent intent = new Intent(ItemsActivity.this, ItemViewActivity.class);
+                intent.putExtra(Constants.item_id, itemId);
+                startActivity(intent);
+                }
             }
         });
 

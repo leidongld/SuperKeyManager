@@ -13,7 +13,10 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -38,7 +41,7 @@ dependencies {
     compile 'net.zetetic:android-database-sqlcipher:3.5.1'
     compile 'org.greenrobot:greendao-generator:3.0.0'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.android.volley:volley:1.0.0'
+    //compile 'com.android.volley:volley:1.0.0'
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
     compile files('src/main/libs/commons-codec-1.10.jar')
@@ -47,4 +50,5 @@ dependencies {
     compile files('src/main/libs/commons-validator-1.6-tests.jar')
     implementation files('libs/okhttp-3.9.0.jar')
     implementation files('libs/okio-1.13.0.jar')
+    compile project(path: ':volley')
 }

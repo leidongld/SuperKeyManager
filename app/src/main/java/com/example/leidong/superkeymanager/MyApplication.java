@@ -1,8 +1,12 @@
 package com.example.leidong.superkeymanager;
 
 import android.app.Application;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 
 import com.android.volley.RequestQueue;
 import com.example.leidong.superkeymanager.gen.DaoMaster;
@@ -27,6 +31,10 @@ public class MyApplication extends Application {
     private static RequestQueue mRequestQueue;
     private static HashMap<Integer, ArrayList<Integer>> zoneParams;
 
+    private FingerprintManagerCompat fingerprintManager;
+    private KeyguardManager keyguardManager;
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(){
         super.onCreate();
@@ -39,6 +47,16 @@ public class MyApplication extends Application {
         UserDefault.getUserDefaultInstance(getApplicationContext());
 
         zoneParams = new HashMap<>();
+
+        keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        fingerprintManager = FingerprintManagerCompat.from(context);
+
+        if(keyguardManager.isDeviceSecure() && fingerprintManager.hasEnrolledFingerprints()){
+            UserDefault.getUserDefaultInstance(null).setIsHasFingerprint(true);
+        }
+        else{
+            UserDefault.getUserDefaultInstance(null).setIsHasFingerprint(false);
+        }
 
         /*HurlStack hurlStack = new HurlStack(null, HttpsUtils.initCertificates(bksFile, password, certificates));
         mRequestQueue = Volley.newRequestQueue(context, hurlStack);*/
